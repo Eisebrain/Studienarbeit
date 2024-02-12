@@ -1,3 +1,10 @@
+Go to lite/examples/pose_estimation/android/app/src/main/java/org/tensorflow/lite/examples/poseestimation
+
+- Changes(angle calculation & logging) were made in MoveNet.kt
+- Small adjustments in Mainactivity (in comments, not finished)
+
+
+
 # TensorFlow Examples
 
 <div align="center">
