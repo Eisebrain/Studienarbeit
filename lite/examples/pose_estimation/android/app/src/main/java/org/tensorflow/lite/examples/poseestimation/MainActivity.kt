@@ -38,6 +38,11 @@ import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
 
+import android.graphics.Color
+import android.view.ViewGroup
+
+
+
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
@@ -56,6 +61,9 @@ class MainActivity : AppCompatActivity() {
 
     /** Default device is CPU */
     private var device = Device.CPU
+
+    // Hinzugefügt
+    private lateinit var tvAngle: TextView
 
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
@@ -147,12 +155,30 @@ class MainActivity : AppCompatActivity() {
         tvClassificationValue3 = findViewById(R.id.tvClassificationValue3)
         swClassification = findViewById(R.id.swPoseClassification)
         vClassificationOption = findViewById(R.id.vClassificationOption)
-        initSpinner()
-        spnModel.setSelection(modelPos)
+
+        // Hinzugefügt
+        tvAngle = TextView(this)
+        tvAngle.id = View.generateViewId()
+        tvAngle.text = "Angle: 0.0 degrees"
+        tvAngle.textSize = 16f
+        tvAngle.setTextColor(Color.BLACK)
+        tvAngle.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        //val mainLayout: LinearLayout = findViewById(R.id.activity_main) // Ersetze mainLayout durch die ID deines Hauptlayouts
+        //mainLayout.addView(tvAngle)
+
         swClassification.setOnCheckedChangeListener(setClassificationListener)
         if (!isCameraPermissionGranted()) {
             requestPermission()
         }
+
+
+        spnModel.setSelection(modelPos)
+
+
+        initSpinner()
     }
 
     override fun onStart() {
