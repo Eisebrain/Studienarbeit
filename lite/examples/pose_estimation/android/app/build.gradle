@@ -4,11 +4,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    //compileSdkVersion 30
+    //buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "org.tensorflow.lite.examples.poseestimation"
+        compileSdk 30
         minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
@@ -30,6 +31,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace"org.tensorflow.lite.examples.poseestimation"
 }
 
 // Download tflite model

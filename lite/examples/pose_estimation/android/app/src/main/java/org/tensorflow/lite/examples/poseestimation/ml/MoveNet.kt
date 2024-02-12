@@ -33,6 +33,9 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+import android.util.Log
+
+
 enum class ModelType {
     Lightning,
     Thunder
@@ -98,6 +101,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
         }
         var totalScore = 0f
 
+        //
         val numKeyPoints = outputShape[2]
         val keyPoints = mutableListOf<KeyPoint>()
 
@@ -166,8 +170,61 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
         }
         lastInferenceTimeNanos =
             SystemClock.elapsedRealtimeNanos() - inferenceStartTimeNanos
+
+
+        // Hinzugefügter Code: Berechnung der Vektoren
+        val vectors = calculateVectors(keyPoints)
+        if (vectors != null) {
+            // Hier kannst du die Vektoren verwenden oder weiterverarbeiten.
+            // Beispiel: Log.d("Vectors", "Vector KneeToHip: ${vectors.first}, Vector KneeToAnkle: ${vectors.second}")
+        } else {
+            // Behandlung, falls die KeyPoints nicht ausreichen.
+        }
+
         return listOf(Person(keyPoints = keyPoints, score = totalScore / numKeyPoints))
     }
+
+
+    // Hinzugefügt: Berechnung der Vektoren
+    data class Vector(val x: Float, val y: Float)
+
+    fun calculateVectors(keyPoints: List<KeyPoint>): Float? {
+        val leftKnee = keyPoints[BodyPart.LEFT_KNEE.position].coordinate
+        val leftHip = keyPoints[BodyPart.LEFT_HIP.position].coordinate
+        val leftAnkle = keyPoints[BodyPart.LEFT_ANKLE.position].coordinate
+
+        val rightKnee = keyPoints[BodyPart.RIGHT_KNEE.position].coordinate
+        val rightHip = keyPoints[BodyPart.RIGHT_HIP.position].coordinate
+        val rightAnkle = keyPoints[BodyPart.RIGHT_ANKLE.position].coordinate
+
+        val leftKneeHipVector = Vector(leftHip.x - leftKnee.x, leftHip.y - leftKnee.y)
+        val leftKneeAnkleVector = Vector(leftAnkle.x - leftKnee.x, leftAnkle.y - leftKnee.y)
+
+        val rightKneeHipVector = Vector(rightHip.x - rightKnee.x, rightHip.y - rightKnee.y)
+        val rightKneeAnkleVector = Vector(rightAnkle.x - rightKnee.x, rightAnkle.y - rightKnee.y)
+
+        val angleKneeHipAnkle = calculateAngle(leftKneeHipVector, leftKneeAnkleVector)
+        //Log.d("Angle", "Angle between Knee-Hip and Knee-Ankle: $angleKneeHipAnkle degrees")
+        println("Angle between Knee-Hip and Knee-Ankle: $angleKneeHipAnkle degrees")
+
+
+        return angleKneeHipAnkle    }
+
+
+    // Hinzugefügt: Berechnung der Winkel zwischen den Vektoren
+    private fun calculateAngle(vector1: Vector, vector2: Vector): Float {
+        val dotProduct = (vector1.x * vector2.x + vector1.y * vector2.y).toDouble()
+        val magnitude1 = Math.sqrt((vector1.x * vector1.x + vector1.y * vector1.y).toDouble())
+        val magnitude2 = Math.sqrt((vector2.x * vector2.x + vector2.y * vector2.y).toDouble())
+        val cosTheta = dotProduct / (magnitude1 * magnitude2)
+
+        // Der ArcCos gibt den Winkel in Radiant zurück, also in Grad umrechnen
+        val angle = Math.toDegrees(Math.acos(cosTheta)).toFloat()
+
+        return angle
+    }
+
+
 
     override fun lastInferenceTimeNanos(): Long = lastInferenceTimeNanos
 
