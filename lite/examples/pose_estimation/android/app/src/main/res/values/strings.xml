@@ -9,6 +9,11 @@
     <string name="tfe_pe_tv_pose_classification">Pose Classification</string>
     <string name="tfe_pe_tv_tracking">Tracker: </string>
     <string name="tfe_pe_gpu_error">Movenet MultiPose does not support GPU. Fallback to CPU.</string>
+    <string name="video_input">Upload video</string>
+    <string name="video_test">Use test video</string>
+    <string name="camera_input">Use camera</string>
+    <string name="string_test_video">Test Video</string>
+    <string name="string_camera_input">Camera</string>
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>
