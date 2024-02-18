@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
+import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
 
 
 class MainActivity : AppCompatActivity() {
@@ -179,7 +180,7 @@ class MainActivity : AppCompatActivity() {
             requestCameraPermission()
         }
 
-        btnSwitch2UploadVideo.setOnClickListener {
+        btnSwitch2UploadVideo.setOnClickListener(View.OnClickListener {
             // ToDo: let user upload video from files
             // 1) request permission to access files
             // 2) open file picker
@@ -190,17 +191,17 @@ class MainActivity : AppCompatActivity() {
 //                openVideo()
 //            }
             showToast("Function not implemented yet")
-        }
+        })
 
         btnSwitch2TestVido.setOnClickListener {
             val i = Intent(this@MainActivity, VideoActivity::class.java)
             startActivity(i)
         }
 
-        btnSwitch2Camera.setOnClickListener {
+        btnSwitch2Camera.setOnClickListener(View.OnClickListener {
             val i = Intent(this@MainActivity, MainActivity::class.java)
             startActivity(i)
-        }
+        })
 
         spnModel.setSelection(modelPos)
 
@@ -286,7 +287,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openVideo() {
         if (isExternalStoragePermissionGranted()) {
-
+            ;
         }
         // ncreatePoseEstimator()
     }
