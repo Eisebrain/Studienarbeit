@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
-import org.tensorflow.lite.examples.poseestimation.video.VideoSource
+import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
 
 
 class MainActivity : AppCompatActivity() {
@@ -80,7 +80,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnSwitch2TestVido: Button
     private lateinit var btnSwitch2Camera: Button
     private var cameraSource: CameraSource? = null
-    private var videoSource: VideoSource? = null
     private var isClassifyPose = false
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -288,7 +287,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openVideo() {
         if (isExternalStoragePermissionGranted()) {
-            videoSource = VideoSource(surfaceView)
+            ;
         }
         // ncreatePoseEstimator()
     }
