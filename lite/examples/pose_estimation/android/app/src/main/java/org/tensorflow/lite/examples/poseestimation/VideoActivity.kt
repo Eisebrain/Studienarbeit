@@ -1,11 +1,12 @@
 package org.tensorflow.lite.examples.poseestimation
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.SurfaceView
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.Toast
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,7 @@ import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
 class VideoActivity : AppCompatActivity() {
 
     // surface view to display video
-    private lateinit var videoView: VideoView
+    private lateinit var surfaceView: SurfaceView
 
     private var videoHPE: VideoHPE? = null
 
@@ -31,7 +32,7 @@ class VideoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_video)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        videoView = findViewById(R.id.videoView)
+        surfaceView = findViewById(R.id.surfaceView)
         btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
         btnSwitch2TestVido = findViewById(R.id.btnTestVideo)
         btnSwitch2Camera = findViewById(R.id.btnUseCamera)
@@ -59,21 +60,10 @@ class VideoActivity : AppCompatActivity() {
 
     private fun openVideo() {
         // setup viedo view
-        videoView.setVideoPath("android.resource://" + packageName + "/" + R.raw.test_video_functionalshirt)
-        // loop video
-        videoView.setOnPreparedListener { mp -> mp.isLooping = true }
-
-        videoView.setOnErrorListener { mp, what, extra ->
-            Toast.makeText(
-                applicationContext,
-                "Error occured while playing video: $mp, $what",
-                Toast.LENGTH_LONG
-            ).show()
-            false
-        }
+        val videoUri = Uri.parse("android.resource://" + packageName + "/" + R.raw.test_video_functionalshirt)
 
         // add HPE to frame
-        videoHPE = VideoHPE(videoView)
+        videoHPE = VideoHPE(surfaceView, videoUri)
 
         lifecycleScope.launch(Dispatchers.Main) {
             videoHPE?.initVideo()
