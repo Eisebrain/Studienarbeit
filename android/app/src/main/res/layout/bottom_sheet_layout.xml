@@ -121,4 +121,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnUploadVideo"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/video_input" />
+
+    <Button
+        android:id="@+id/btnTestVideo"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/video_test" />
+
+    <Button
+        android:id="@+id/btnUseCamera"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/camera_input" />
 </androidx.appcompat.widget.LinearLayoutCompat>

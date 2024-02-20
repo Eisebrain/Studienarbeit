@@ -33,9 +33,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-import android.util.Log
-
-
 enum class ModelType {
     Lightning,
     Thunder
@@ -205,10 +202,9 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
 
         val angleKneeHipAnkle = calculateAngle(leftKneeHipVector, leftKneeAnkleVector)
         //Log.d("Angle", "Angle between Knee-Hip and Knee-Ankle: $angleKneeHipAnkle degrees")
-        println("Angle between Knee-Hip and Knee-Ankle: $angleKneeHipAnkle degrees")
-
-
-        return angleKneeHipAnkle    }
+        // println("Angle between Knee-Hip and Knee-Ankle: $angleKneeHipAnkle degrees")
+        return angleKneeHipAnkle
+    }
 
 
     // Hinzugefügt: Berechnung der Winkel zwischen den Vektoren

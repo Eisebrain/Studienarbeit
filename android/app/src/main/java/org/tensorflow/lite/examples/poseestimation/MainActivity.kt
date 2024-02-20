@@ -19,11 +19,14 @@ package org.tensorflow.lite.examples.poseestimation
 import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Process
 import android.view.SurfaceView
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,10 +40,6 @@ import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
-
-import android.graphics.Color
-import android.view.ViewGroup
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -76,6 +75,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvClassificationValue3: TextView
     private lateinit var swClassification: SwitchCompat
     private lateinit var vClassificationOption: View
+    private lateinit var btnSwitch2UploadVideo: Button
+    private lateinit var btnSwitch2TestVido: Button
+    private lateinit var btnSwitch2Camera: Button
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
     private val requestPermissionLauncher =
@@ -155,6 +157,9 @@ class MainActivity : AppCompatActivity() {
         tvClassificationValue3 = findViewById(R.id.tvClassificationValue3)
         swClassification = findViewById(R.id.swPoseClassification)
         vClassificationOption = findViewById(R.id.vClassificationOption)
+        btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
+        btnSwitch2TestVido = findViewById(R.id.btnTestVideo)
+        btnSwitch2Camera = findViewById(R.id.btnUseCamera)
 
         // Hinzugefügt
         tvAngle = TextView(this)
@@ -171,12 +176,33 @@ class MainActivity : AppCompatActivity() {
 
         swClassification.setOnCheckedChangeListener(setClassificationListener)
         if (!isCameraPermissionGranted()) {
-            requestPermission()
+            requestCameraPermission()
         }
 
+        btnSwitch2UploadVideo.setOnClickListener {
+            // ToDo: let user upload video from files
+            // 1) request permission to access files
+            // 2) open file picker
+//            // 3) get video file and pass to function
+//            if (!isExternalStoragePermissionGranted()) {
+//                requestExternalStoragePermission()
+//            } else {
+//                openVideo()
+//            }
+            showToast("Function not implemented yet")
+        }
+
+        btnSwitch2TestVido.setOnClickListener {
+            val i = Intent(this@MainActivity, VideoActivity::class.java)
+            startActivity(i)
+        }
+
+        btnSwitch2Camera.setOnClickListener {
+            val i = Intent(this@MainActivity, MainActivity::class.java)
+            startActivity(i)
+        }
 
         spnModel.setSelection(modelPos)
-
 
         initSpinner()
     }
@@ -247,6 +273,22 @@ class MainActivity : AppCompatActivity() {
             }
             createPoseEstimator()
         }
+    }
+
+    // check if permission is granted or not.
+    private fun isExternalStoragePermissionGranted(): Boolean {
+        return checkPermission(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Process.myPid(),
+            Process.myUid()
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun openVideo() {
+        if (isExternalStoragePermissionGranted()) {
+
+        }
+        // ncreatePoseEstimator()
     }
 
     private fun convertPoseLabels(pair: Pair<String, Float>?): String {
@@ -334,6 +376,7 @@ class MainActivity : AppCompatActivity() {
                 showTracker(false)
                 MoveNet.create(this, device, ModelType.Lightning)
             }
+
             1 -> {
                 // MoveNet Thunder (SinglePose)
                 showPoseClassifier(true)
@@ -341,6 +384,7 @@ class MainActivity : AppCompatActivity() {
                 showTracker(false)
                 MoveNet.create(this, device, ModelType.Thunder)
             }
+
             2 -> {
                 // MoveNet (Lightning) MultiPose
                 showPoseClassifier(false)
@@ -356,6 +400,7 @@ class MainActivity : AppCompatActivity() {
                     Type.Dynamic
                 )
             }
+
             3 -> {
                 // PoseNet (SinglePose)
                 showPoseClassifier(true)
@@ -363,6 +408,7 @@ class MainActivity : AppCompatActivity() {
                 showTracker(false)
                 PoseNet.create(this, device)
             }
+
             else -> {
                 null
             }
@@ -406,7 +452,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestPermission() {
+    private fun requestCameraPermission() {
         when (PackageManager.PERMISSION_GRANTED) {
             ContextCompat.checkSelfPermission(
                 this,
@@ -415,11 +461,32 @@ class MainActivity : AppCompatActivity() {
                 // You can use the API that requires the permission.
                 openCamera()
             }
+
             else -> {
                 // You can directly ask for the permission.
                 // The registered ActivityResultCallback gets the result of this request.
                 requestPermissionLauncher.launch(
                     Manifest.permission.CAMERA
+                )
+            }
+        }
+    }
+
+    private fun requestExternalStoragePermission() {
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) -> {
+                // You can use the API that requires the permission.
+                openVideo()
+            }
+
+            else -> {
+                // You can directly ask for the permission.
+                // The registered ActivityResultCallback gets the result of this request.
+                requestPermissionLauncher.launch(
+                    Manifest.permission.READ_EXTERNAL_STORAGE
                 )
             }
         }
