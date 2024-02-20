@@ -14,6 +14,7 @@
     <string name="camera_input">Use camera</string>
     <string name="string_test_video">Test Video</string>
     <string name="string_camera_input">Camera</string>
+    <string name="testvideo">TestVideo</string>
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>
