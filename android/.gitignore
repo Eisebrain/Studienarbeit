@@ -1,0 +1,15 @@
+**/*.pyc
+**/.DS_Store
+**/.idea
+**/.ipynb_checkpoints
+
+# Android build directories
+/build/
+/captured/
+
+# OpenCV build directories (falls du separate OpenCV-Build-Ordner hast)
+/opencv-4.8.1/build/
+
+# IDE-specific files (falls du verschiedene IDEs verwendest, z.B. IntelliJ IDEA, Android Studio)
+/.idea/
+*.iml

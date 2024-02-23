@@ -1,0 +1,3 @@
+C:/Users/Timo/AndroidStudioProjects/Studienarbeit-Android/android/opencv-4.8.1/.cxx/RelWithDebInfo/5q37h587/x86/CMakeFiles/opencv_jni_shared.dir
+C:/Users/Timo/AndroidStudioProjects/Studienarbeit-Android/android/opencv-4.8.1/.cxx/RelWithDebInfo/5q37h587/x86/CMakeFiles/edit_cache.dir
+C:/Users/Timo/AndroidStudioProjects/Studienarbeit-Android/android/opencv-4.8.1/.cxx/RelWithDebInfo/5q37h587/x86/CMakeFiles/rebuild_cache.dir

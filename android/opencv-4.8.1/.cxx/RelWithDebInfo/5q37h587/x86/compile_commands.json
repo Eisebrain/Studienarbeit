@@ -1,0 +1,7 @@
+[
+{
+  "directory": "C:/Users/Timo/AndroidStudioProjects/Studienarbeit-Android/android/opencv-4.8.1/.cxx/RelWithDebInfo/5q37h587/x86",
+  "command": "C:\\Users\\Timo\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android21 --sysroot=C:/Users/Timo/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O2 -g -DNDEBUG -fPIC -o CMakeFiles\\opencv_jni_shared.dir\\dummy.cpp.o -c C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\libcxx_helper\\dummy.cpp",
+  "file": "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\libcxx_helper\\dummy.cpp"
+}
+]

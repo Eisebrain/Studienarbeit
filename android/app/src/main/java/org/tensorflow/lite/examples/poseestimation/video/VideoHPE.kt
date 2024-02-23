@@ -17,6 +17,8 @@ import org.tensorflow.lite.examples.poseestimation.data.Person
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
 import java.util.Timer
+import org.opencv.android.OpenCVLoader
+
 
 class VideoHPE(
     private val surfaceView: SurfaceView,
@@ -56,6 +58,13 @@ class VideoHPE(
     private var imageReaderHandler: Handler? = null
 
     suspend fun initVideo() {
+        if (OpenCVLoader.initDebug()) {
+            println("OpenCV is loaded")
+        } else {
+            println("OpenCV is not loaded")
+            return
+        }
+
         GlobalScope.launch(Dispatchers.IO) {
             // get bitmap from video
             val retriever = MediaMetadataRetriever()
@@ -71,55 +80,13 @@ class VideoHPE(
             while (currentTimeMs < durationMs) {
                 val bitmap = retriever.getFrameAtTime(currentTimeMs * 1000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
                 if (bitmap != null) {
+
                     visualize(bitmap)
                 }
                 // Inkrementiere die aktuelle Zeit um das Intervall zwischen den Frames
                 currentTimeMs += frameIntervalMs
             }
         }
-
-
-//        imageReader =
-//            ImageReader.newInstance(
-//                PREVIEW_WIDTH,
-//                PREVIEW_HEIGHT, ImageFormat.YUV_420_888, 3
-//            )
-//        imageReader?.setOnImageAvailableListener({ reader ->
-//            val image = reader.acquireLatestImage()
-//            if (image != null) {
-//                if (!::imageBitmap.isInitialized) {
-//                    imageBitmap =
-//                        Bitmap.createBitmap(
-//                            PREVIEW_WIDTH,
-//                            PREVIEW_HEIGHT,
-//                            Bitmap.Config.ARGB_8888
-//                        )
-//                }
-//                //yuvConverter.yuvToRgb(image, imageBitmap)
-//                // Create rotated version for portrait display
-//                val rotateMatrix = Matrix()
-//                rotateMatrix.postRotate(90.0f)
-//
-//                val rotatedBitmap = Bitmap.createBitmap(
-//                    imageBitmap, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT,
-//                    rotateMatrix, false
-//                )
-//                processImage(rotatedBitmap)
-//                image.close()
-//            }
-//        }, imageReaderHandler)
-
-//        imageReader?.surface?.let { surface ->
-//            session = createSession(listOf(surface))
-//            val cameraRequest = camera?.createCaptureRequest(
-//                CameraDevice.TEMPLATE_PREVIEW
-//            )?.apply {
-//                addTarget(surface)
-//            }
-//            cameraRequest?.build()?.let {
-//                session?.setRepeatingRequest(it, null, null)
-//            }
-//        }
 
     }
 

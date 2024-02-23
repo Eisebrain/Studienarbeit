@@ -1,0 +1,1 @@
+C:\Users\Timo\AndroidStudioProjects\Studienarbeit-Android\android\opencv-4.8.1\build\intermediates\cxx\Debug\g4a504p2\obj\x86
