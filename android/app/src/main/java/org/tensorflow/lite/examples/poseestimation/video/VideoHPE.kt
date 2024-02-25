@@ -73,12 +73,16 @@ class VideoHPE(
             val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             val durationMs = duration?.toLong() ?: 0
 
-            val frameIntervalMs = (1000 / frameRate).toLong() // Intervall zwischen den Frames in Millisekunden
+            val frameIntervalMs =
+                (1000 / frameRate).toLong() // Intervall zwischen den Frames in Millisekunden
 
             // process bitmap
             var currentTimeMs = 0L
             while (currentTimeMs < durationMs) {
-                val bitmap = retriever.getFrameAtTime(currentTimeMs * 1000, MediaMetadataRetriever.OPTION_CLOSEST)
+                val bitmap = retriever.getFrameAtTime(
+                    currentTimeMs * 1000,
+                    MediaMetadataRetriever.OPTION_CLOSEST
+                )
                 if (bitmap != null) {
                     processImage(bitmap)
                 }
@@ -89,6 +93,15 @@ class VideoHPE(
 
     }
 
+    fun setDetector(detector: PoseDetector) {
+        synchronized(lock) {
+            if (this.detector != null) {
+                this.detector?.close()
+                this.detector = null
+            }
+            this.detector = detector
+        }
+    }
 
     // process image
     private fun processImage(bitmap: Bitmap) {
@@ -101,7 +114,6 @@ class VideoHPE(
 
                 // if the model only returns one item, allow running the Pose classifier.
                 if (persons.isNotEmpty()) {
-                    println("person detected")
                     classifier?.run {
                         classificationResult = classify(persons[0])
                     }
