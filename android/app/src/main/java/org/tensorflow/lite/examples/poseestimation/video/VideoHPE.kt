@@ -31,7 +31,7 @@ class VideoHPE(
 
         /** Threshold for confidence score. */
         private const val MIN_CONFIDENCE = .2f
-        private const val TAG = "Camera Source"
+        private const val TAG = "Video"
     }
 
 
@@ -46,7 +46,7 @@ class VideoHPE(
     private var fpsTimer: Timer? = null
     private var frameProcessedInOneSecondInterval = 0
     private var framesPerSecond = 0
-    private var frameRate = 1000/30
+    private var frameRate = 29.99f
 
     /** Readers used as buffers for camera still shots */
     private var imageReader: ImageReader? = null
@@ -73,15 +73,14 @@ class VideoHPE(
             val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             val durationMs = duration?.toLong() ?: 0
 
-            val frameIntervalMs = (1000 / 29.99).toLong() // Intervall zwischen den Frames in Millisekunden
+            val frameIntervalMs = (1000 / frameRate).toLong() // Intervall zwischen den Frames in Millisekunden
 
             // process bitmap
             var currentTimeMs = 0L
             while (currentTimeMs < durationMs) {
-                val bitmap = retriever.getFrameAtTime(currentTimeMs * 1000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+                val bitmap = retriever.getFrameAtTime(currentTimeMs * 1000, MediaMetadataRetriever.OPTION_CLOSEST)
                 if (bitmap != null) {
-
-                    visualize(bitmap)
+                    processImage(bitmap)
                 }
                 // Inkrementiere die aktuelle Zeit um das Intervall zwischen den Frames
                 currentTimeMs += frameIntervalMs
@@ -102,6 +101,7 @@ class VideoHPE(
 
                 // if the model only returns one item, allow running the Pose classifier.
                 if (persons.isNotEmpty()) {
+                    println("person detected")
                     classifier?.run {
                         classificationResult = classify(persons[0])
                     }

@@ -193,6 +193,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnSwitch2TestVido.setOnClickListener {
+            onPause()
             val i = Intent(this@MainActivity, VideoActivity::class.java)
             startActivity(i)
         }

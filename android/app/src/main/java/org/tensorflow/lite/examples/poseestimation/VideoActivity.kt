@@ -32,7 +32,7 @@ class VideoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_video)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        surfaceView = findViewById(R.id.surfaceView)
+        surfaceView = findViewById(R.id.surfaceViewVideo)
         btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
         btnSwitch2TestVido = findViewById(R.id.btnTestVideo)
         btnSwitch2Camera = findViewById(R.id.btnUseCamera)
