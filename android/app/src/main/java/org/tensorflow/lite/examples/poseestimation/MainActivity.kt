@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.os.Process
 import android.view.SurfaceView
 import android.view.View
+import android.os.CountDownTimer
 import android.view.WindowManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -44,6 +45,11 @@ import android.view.ViewGroup
 
 
 class MainActivity : AppCompatActivity() {
+
+
+
+
+
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
     }
@@ -78,6 +84,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var vClassificationOption: View
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
+    private lateinit var timerTextView: TextView
+
+
+
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -155,6 +165,7 @@ class MainActivity : AppCompatActivity() {
         tvClassificationValue3 = findViewById(R.id.tvClassificationValue3)
         swClassification = findViewById(R.id.swPoseClassification)
         vClassificationOption = findViewById(R.id.vClassificationOption)
+        timerTextView = findViewById(R.id.timerTextView)
 
         // Hinzugefügt
         tvAngle = TextView(this)
@@ -166,7 +177,7 @@ class MainActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        //val mainLayout: LinearLayout = findViewById(R.id.activity_main) // Ersetze mainLayout durch die ID deines Hauptlayouts
+        //val mainLayout: LinearLayout = findViewById(R.layout.activity_main) // Ersetze mainLayout durch die ID deines Hauptlayouts
         //mainLayout.addView(tvAngle)
 
         swClassification.setOnCheckedChangeListener(setClassificationListener)
@@ -177,8 +188,26 @@ class MainActivity : AppCompatActivity() {
 
         spnModel.setSelection(modelPos)
 
-
+        startCountdownTimer()
         initSpinner()
+
+    }
+
+    private fun startCountdownTimer() {
+        object : CountDownTimer(30000, 1000) { // 30 Sekunden, tickt jede Sekunde
+            override fun onTick(millisUntilFinished: Long) {
+                // Aktualisieren des TextViews jede Sekunde
+                val secondsRemaining = millisUntilFinished / 1000
+                timerTextView.text = String.format("%02d:%02d", secondsRemaining / 60, secondsRemaining % 60)
+            }
+
+            override fun onFinish() {
+                // Aktionen hier, wenn der Timer fertig ist
+                timerTextView.text = "00:00"
+                Toast.makeText(applicationContext, "Timer beendet!", Toast.LENGTH_SHORT).show()
+                // Sie können hier weitere Aktionen hinzufügen, z. B. eine Aktivität wechseln, eine Funktion ausführen usw.
+            }
+        }.start()
     }
 
     override fun onStart() {
