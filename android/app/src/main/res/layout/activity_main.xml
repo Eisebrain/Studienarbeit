@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <SurfaceView
         android:id="@+id/surfaceView"
         android:layout_width="match_parent"
@@ -22,13 +21,12 @@
         android:id="@+id/timerTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:layout_gravity="end|top"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="20dp"
         android:text="00:00"
-
-        android:layout_centerInParent="true"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="24sp" />
 
     <include layout="@layout/bottom_sheet_layout" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
