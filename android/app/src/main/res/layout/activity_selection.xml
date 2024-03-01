@@ -87,20 +87,24 @@
 
 
             <Button
-
+                android:id="@+id/liveAnalysisButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="Live analysis"
-                android:onClick="goToLiveAnalysis" />
+                android:onClick="goToLiveAnalysis"
+                android:enabled="false"
+                />
             <Button
+                android:id="@+id/videoUploadButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="Video upload"
-                android:onClick="goToVideoUpload" />
+                android:onClick="goToVideoUpload"
+                android:enabled="false" />
         </LinearLayout>
 
 
