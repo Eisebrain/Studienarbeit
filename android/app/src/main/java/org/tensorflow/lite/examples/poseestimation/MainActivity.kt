@@ -86,6 +86,8 @@ class MainActivity : AppCompatActivity() {
     private var isClassifyPose = false
     private lateinit var timerTextView: TextView
 
+    // variable for selected exercise
+    private var selectedExercise: String? = null
 
 
     private val requestPermissionLauncher =
@@ -187,10 +189,46 @@ class MainActivity : AppCompatActivity() {
 
 
         spnModel.setSelection(modelPos)
-
-        startCountdownTimer()
+        showStartTimerDialog()
         initSpinner()
 
+    }
+
+
+
+    private fun showStartTimerDialog() {
+        AlertDialog.Builder(this).apply {
+
+            // Get selected exercise
+            val selectedExercise = SelectionActivity.selectedImage
+
+            // display the selected exercise
+            if (selectedExercise == R.id.imageView1) {
+                setTitle("L-Sit")
+                setMessage("Straight back\n" +
+                        "Keep rings stable\n" +
+                        "Angle 90°\n" +
+                        "Legs horizontal to the floor\n" +
+                        "Hold for 3 seconds ")
+            } else if (selectedExercise == R.id.imageView2) {
+                setTitle("Squat")
+                setMessage("Keep your back straight\n" +
+                        "Go down to 90°\n" +
+                        "Keep your head straight and look forward")
+            }
+
+
+            setPositiveButton("Start") { dialog, which ->
+                // Startet den Timer, wenn der Nutzer auf "Start" klickt
+                startCountdownTimer()
+            }
+            setNegativeButton("Back to selection") { dialog, which ->
+                // go back to selection
+                finish()
+
+            }
+            setCancelable(false) // Verhindert das Schließen des Dialogs durch Zurück-Taste oder Tippen außerhalb
+        }.show()
     }
 
     private fun startCountdownTimer() {
