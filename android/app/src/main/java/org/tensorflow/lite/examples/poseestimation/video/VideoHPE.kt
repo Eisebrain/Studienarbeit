@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.poseestimation.video
 
 import android.graphics.Bitmap
+import android.graphics.PointF
 import android.graphics.Rect
 import android.media.ImageReader
 import android.media.MediaMetadataRetriever
@@ -8,16 +9,19 @@ import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.SurfaceView
+import android.widget.TextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
-import org.tensorflow.lite.examples.poseestimation.YuvToRgbConverter
 import org.tensorflow.lite.examples.poseestimation.data.Person
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
+import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import java.util.Timer
 import org.opencv.android.OpenCVLoader
+import org.tensorflow.lite.examples.poseestimation.data.BodyPart
+import org.w3c.dom.Text
 
 
 class VideoHPE(
@@ -39,8 +43,8 @@ class VideoHPE(
     private var detector: PoseDetector? = null
     private var classifier: PoseClassifier? = null
     private var isTrackerEnabled = false
-    private var yuvConverter: YuvToRgbConverter = YuvToRgbConverter(surfaceView.context)
-    private lateinit var imageBitmap: Bitmap
+    private var spineTracker: SpineTracker? = null
+    private var isSpineStraight: Boolean? = null
 
     /** Frame count that have been processed so far in an one second interval to calculate FPS. */
     private var fpsTimer: Timer? = null
@@ -103,6 +107,10 @@ class VideoHPE(
         }
     }
 
+    fun setSpineTracker(spineTracker: SpineTracker) {
+        this.spineTracker = spineTracker
+    }
+
     // process image
     private fun processImage(bitmap: Bitmap) {
         val persons = mutableListOf<Person>()
@@ -129,6 +137,18 @@ class VideoHPE(
         // if the model returns only one item, show that item's score.
         if (persons.isNotEmpty()) {
             listener?.onDetectedInfo(persons[0].score, classificationResult)
+
+            isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
+            if (isSpineStraight != null) {
+                var text = ""
+                if (isSpineStraight!!) {
+                    // Todo: sent to view to update textview (tvSpineCurvature)
+                    text = "Spine is straight"
+                } else {
+                    text = "Spine is not straight"
+                }
+                println(text)
+            }
         }
         visualize(persons, bitmap)
     }

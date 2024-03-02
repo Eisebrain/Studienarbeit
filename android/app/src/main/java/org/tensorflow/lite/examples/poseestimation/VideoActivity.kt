@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.SurfaceView
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +18,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNetMultiPose
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import org.tensorflow.lite.examples.poseestimation.ml.Type
+import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
 
 class VideoActivity : AppCompatActivity() {
@@ -43,6 +45,8 @@ class VideoActivity : AppCompatActivity() {
     private lateinit var btnSwitch2TestVideo: Button
     private lateinit var btnSwitch2Camera: Button
 
+    private lateinit var tvSpineCurvature: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +57,7 @@ class VideoActivity : AppCompatActivity() {
         btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
         btnSwitch2TestVideo = findViewById(R.id.btnTestVideo)
         btnSwitch2Camera = findViewById(R.id.btnUseCamera)
+        tvSpineCurvature = findViewById(R.id.tvSpineCurvature)
 
         btnSwitch2UploadVideo.setOnClickListener {
             // ToDo: let user upload video from files
@@ -140,11 +145,16 @@ class VideoActivity : AppCompatActivity() {
         poseDetector?.let { detector ->
             videoHPE?.setDetector(detector)
         }
+
+        // Set SpineTracker
+        videoHPE?.setSpineTracker(SpineTracker())
     }
 
-
-
-        private fun showToast(message: String) {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-        }
+    fun updateTVSpineCurvature(spineCurvature: String) {
+        tvSpineCurvature.text = spineCurvature
     }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+}
