@@ -38,6 +38,9 @@
         <activity android:name=".VideoUploadActivity">
 
         </activity>
+        <activity android:name=".FinishActivity">
+
+        </activity>
     </application>
 
 </manifest>

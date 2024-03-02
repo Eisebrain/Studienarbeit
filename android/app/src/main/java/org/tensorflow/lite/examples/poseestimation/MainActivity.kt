@@ -19,6 +19,7 @@ package org.tensorflow.lite.examples.poseestimation
 import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
@@ -43,11 +44,7 @@ import android.graphics.Color
 import android.view.ViewGroup
 
 
-
 class MainActivity : AppCompatActivity() {
-
-
-
 
 
     companion object {
@@ -195,7 +192,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun showStartTimerDialog() {
         AlertDialog.Builder(this).apply {
 
@@ -205,21 +201,29 @@ class MainActivity : AppCompatActivity() {
             // display the selected exercise
             if (selectedExercise == R.id.imageView1) {
                 setTitle("L-Sit")
-                setMessage("Straight back\n" +
-                        "Keep rings stable\n" +
-                        "Angle 90°\n" +
-                        "Legs horizontal to the floor\n" +
-                        "Hold for 3 seconds ")
+                setMessage(
+                    "You are going to have 10 seconds to get ready and after that you need to perform the L-Sit for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
+                            "\n- Straight back\n" +
+                            "- Keep rings stable\n" +
+                            "- Angle 90°\n" +
+                            "- Legs horizontal to the floor\n" +
+                            "- Hold for 3 seconds "
+                )
             } else if (selectedExercise == R.id.imageView2) {
                 setTitle("Squat")
-                setMessage("Keep your back straight\n" +
-                        "Go down to 90°\n" +
-                        "Keep your head straight and look forward")
+                setMessage(
+                    "You are going to have 10 seconds to get ready and after that you need to perform the Squat for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
+                            "\n- Keep your back straight\n" +
+                            "- Go down to 90°\n" +
+                            "- Keep your head straight and look forward"
+                )
             }
 
 
             setPositiveButton("Start") { dialog, which ->
                 // Startet den Timer, wenn der Nutzer auf "Start" klickt
+
+
                 startCountdownTimer()
             }
             setNegativeButton("Back to selection") { dialog, which ->
@@ -232,18 +236,37 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCountdownTimer() {
+        // 10 Sekunden Timer, um sich bereit zu machen
+        object : CountDownTimer(10000, 1000) { // 10 Sekunden, tickt jede Sekunde
+            override fun onTick(millisUntilFinished: Long) {
+                // Aktualisieren des TextViews jede Sekunde
+                val secondsRemaining = millisUntilFinished / 1000
+                timerTextView.text = String.format("Get ready: %02d", secondsRemaining)
+            }
+
+            override fun onFinish() {
+                // Startet den 30-Sekunden-Timer, sobald der 10-Sekunden-Timer abgelaufen ist
+                timerTextView.text = "Start!"
+                startExerciseTimer()
+            }
+        }.start()
+    }
+
+    private fun startExerciseTimer() {
         object : CountDownTimer(30000, 1000) { // 30 Sekunden, tickt jede Sekunde
             override fun onTick(millisUntilFinished: Long) {
                 // Aktualisieren des TextViews jede Sekunde
                 val secondsRemaining = millisUntilFinished / 1000
-                timerTextView.text = String.format("%02d:%02d", secondsRemaining / 60, secondsRemaining % 60)
+                timerTextView.text = String.format("Exercise: %02d:%02d", secondsRemaining / 60, secondsRemaining % 60)
             }
 
             override fun onFinish() {
-                // Aktionen hier, wenn der Timer fertig ist
-                timerTextView.text = "00:00"
-                Toast.makeText(applicationContext, "Timer beendet!", Toast.LENGTH_SHORT).show()
-                // Sie können hier weitere Aktionen hinzufügen, z. B. eine Aktivität wechseln, eine Funktion ausführen usw.
+                timerTextView.text = "Done!"
+                Toast.makeText(applicationContext, "Exercise finished!", Toast.LENGTH_SHORT).show()
+                // Weiterleitung zur FinishActivity hier
+                val intent = Intent(this@MainActivity, FinishActivity::class.java)
+                startActivity(intent)
+
             }
         }.start()
     }
@@ -401,6 +424,7 @@ class MainActivity : AppCompatActivity() {
                 showTracker(false)
                 MoveNet.create(this, device, ModelType.Lightning)
             }
+
             1 -> {
                 // MoveNet Thunder (SinglePose)
                 showPoseClassifier(true)
@@ -408,6 +432,7 @@ class MainActivity : AppCompatActivity() {
                 showTracker(false)
                 MoveNet.create(this, device, ModelType.Thunder)
             }
+
             2 -> {
                 // MoveNet (Lightning) MultiPose
                 showPoseClassifier(false)
@@ -423,6 +448,7 @@ class MainActivity : AppCompatActivity() {
                     Type.Dynamic
                 )
             }
+
             3 -> {
                 // PoseNet (SinglePose)
                 showPoseClassifier(true)
@@ -430,6 +456,7 @@ class MainActivity : AppCompatActivity() {
                 showTracker(false)
                 PoseNet.create(this, device)
             }
+
             else -> {
                 null
             }
@@ -482,6 +509,7 @@ class MainActivity : AppCompatActivity() {
                 // You can use the API that requires the permission.
                 openCamera()
             }
+
             else -> {
                 // You can directly ask for the permission.
                 // The registered ActivityResultCallback gets the result of this request.
