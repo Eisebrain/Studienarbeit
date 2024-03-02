@@ -1,7 +1,6 @@
 package org.tensorflow.lite.examples.poseestimation.video
 
 import android.graphics.Bitmap
-import android.graphics.PointF
 import android.graphics.Rect
 import android.media.ImageReader
 import android.media.MediaMetadataRetriever
@@ -9,7 +8,6 @@ import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.SurfaceView
-import android.widget.TextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -20,8 +18,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
 import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import java.util.Timer
 import org.opencv.android.OpenCVLoader
-import org.tensorflow.lite.examples.poseestimation.data.BodyPart
-import org.w3c.dom.Text
+
 
 
 class VideoHPE(
@@ -141,11 +138,11 @@ class VideoHPE(
             isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
             if (isSpineStraight != null) {
                 var text = ""
-                if (isSpineStraight!!) {
+                text = if (isSpineStraight!!) {
                     // Todo: sent to view to update textview (tvSpineCurvature)
-                    text = "Spine is straight"
+                    "Spine is straight"
                 } else {
-                    text = "Spine is not straight"
+                    "Spine is not straight"
                 }
                 println(text)
             }

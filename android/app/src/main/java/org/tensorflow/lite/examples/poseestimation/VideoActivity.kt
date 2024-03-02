@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.SurfaceView
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -45,9 +44,6 @@ class VideoActivity : AppCompatActivity() {
     private lateinit var btnSwitch2TestVideo: Button
     private lateinit var btnSwitch2Camera: Button
 
-    private lateinit var tvSpineCurvature: TextView
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
@@ -57,7 +53,6 @@ class VideoActivity : AppCompatActivity() {
         btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
         btnSwitch2TestVideo = findViewById(R.id.btnTestVideo)
         btnSwitch2Camera = findViewById(R.id.btnUseCamera)
-        tvSpineCurvature = findViewById(R.id.tvSpineCurvature)
 
         btnSwitch2UploadVideo.setOnClickListener {
             // ToDo: let user upload video from files
@@ -148,10 +143,6 @@ class VideoActivity : AppCompatActivity() {
 
         // Set SpineTracker
         videoHPE?.setSpineTracker(SpineTracker())
-    }
-
-    fun updateTVSpineCurvature(spineCurvature: String) {
-        tvSpineCurvature.text = spineCurvature
     }
 
     private fun showToast(message: String) {

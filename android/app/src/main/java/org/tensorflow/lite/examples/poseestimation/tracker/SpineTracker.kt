@@ -68,7 +68,7 @@ class SpineTracker {
 
             // Check if curve is straight (polynomial coefficient for x^1)
             val coefficient = fittedParameters[1]
-            return abs(coefficient) <= 0.0045
+            return abs(coefficient) <= 1.5
         } catch (e: Exception) {
             Log.e("SpineCurve", "No curve found.", e)
             return null

@@ -28,17 +28,6 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/tvSpineCurvature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="60dp"
-        android:text="@string/spinecurvature"
-        android:textSize="24sp"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="16dp"/>
-
-
     <include layout="@layout/bottom_sheet_layout" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
