@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".LiveAnalysisActivity">
             <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

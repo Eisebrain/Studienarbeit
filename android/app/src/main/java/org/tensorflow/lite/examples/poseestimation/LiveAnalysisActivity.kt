@@ -44,7 +44,7 @@ import android.graphics.Color
 import android.view.ViewGroup
 
 
-class MainActivity : AppCompatActivity() {
+class LiveAnalysisActivity : AppCompatActivity() {
 
 
     companion object {
@@ -264,7 +264,7 @@ class MainActivity : AppCompatActivity() {
                 timerTextView.text = "Done!"
                 Toast.makeText(applicationContext, "Exercise finished!", Toast.LENGTH_SHORT).show()
                 // Weiterleitung zur FinishActivity hier
-                val intent = Intent(this@MainActivity, FinishActivity::class.java)
+                val intent = Intent(this@LiveAnalysisActivity, FinishActivity::class.java)
                 startActivity(intent)
 
             }
