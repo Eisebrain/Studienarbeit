@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Smarter Workout</string>
     <string name="tfe_pe_app_name">TFL Pose Estimation</string>
     <string name="tfe_pe_request_permission">This app needs camera permission.</string>
     <string name="tfe_pe_tv_score">Score: %.2f</string>
