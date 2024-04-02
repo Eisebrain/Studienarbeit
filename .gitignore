@@ -2,3 +2,6 @@
 **/.DS_Store
 **/.idea
 **/.ipynb_checkpoints
+
+/android/opencv-4.8.1/build/
+/android/local.properties
