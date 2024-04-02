@@ -20,7 +20,6 @@ import java.util.Timer
 import org.opencv.android.OpenCVLoader
 
 
-
 class VideoHPE(
     private val surfaceView: SurfaceView,
     private val videoUri: Uri,
