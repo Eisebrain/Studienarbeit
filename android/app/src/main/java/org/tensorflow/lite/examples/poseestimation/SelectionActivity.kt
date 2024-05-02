@@ -75,7 +75,7 @@ class SelectionActivity : AppCompatActivity() {
 
     fun goToLiveAnalysis(view: View) {
         if (liveAnalysisButton.isEnabled) {
-            val intent = Intent(this, LiveAnalysisActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
     }

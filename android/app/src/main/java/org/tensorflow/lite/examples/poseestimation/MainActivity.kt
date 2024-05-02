@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 package org.tensorflow.lite.examples.poseestimation
-
+import android.content.Context
 import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
@@ -44,7 +44,7 @@ import android.graphics.Color
 import android.view.ViewGroup
 
 
-class LiveAnalysisActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
 
     companion object {
@@ -150,6 +150,9 @@ class LiveAnalysisActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+
         // keep screen on while app is running
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         tvScore = findViewById(R.id.tvScore)
@@ -178,7 +181,12 @@ class LiveAnalysisActivity : AppCompatActivity() {
         )
         //val mainLayout: LinearLayout = findViewById(R.layout.activity_main) // Ersetze mainLayout durch die ID deines Hauptlayouts
         //mainLayout.addView(tvAngle)
-
+        // Check if first start and switch du home page if
+        if (isFirstStart()) {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish() // Beendet MainActivity, um nicht zum MainActivity zurückzukehren
+        }
         swClassification.setOnCheckedChangeListener(setClassificationListener)
         if (!isCameraPermissionGranted()) {
             requestPermission()
@@ -191,6 +199,10 @@ class LiveAnalysisActivity : AppCompatActivity() {
 
     }
 
+    private fun isFirstStart(): Boolean {
+        val prefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return prefs.getBoolean("isFirstStart", true)
+    }
 
     private fun showStartTimerDialog() {
         AlertDialog.Builder(this).apply {
@@ -264,7 +276,7 @@ class LiveAnalysisActivity : AppCompatActivity() {
                 timerTextView.text = "Done!"
                 Toast.makeText(applicationContext, "Exercise finished!", Toast.LENGTH_SHORT).show()
                 // Weiterleitung zur FinishActivity hier
-                val intent = Intent(this@LiveAnalysisActivity, FinishActivity::class.java)
+                val intent = Intent(this@MainActivity, FinishActivity::class.java)
                 startActivity(intent)
 
             }
