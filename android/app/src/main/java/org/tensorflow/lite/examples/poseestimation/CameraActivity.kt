@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
+import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 
 
 class CameraActivity : AppCompatActivity() {
@@ -75,9 +76,10 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var tvClassificationValue3: TextView
     private lateinit var swClassification: SwitchCompat
     private lateinit var vClassificationOption: View
-    private lateinit var btnSwitch2UploadVideo: Button
-    private lateinit var btnSwitch2TestVido: Button
-    private lateinit var btnSwitch2Camera: Button
+//    private lateinit var btnSwitch2UploadVideo: Button
+//    private lateinit var btnSwitch2TestVideo: Button
+//    private lateinit var btnSwitch2Camera: Button
+    private lateinit var btnAbord: Button
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
     private val requestPermissionLauncher =
@@ -157,9 +159,10 @@ class CameraActivity : AppCompatActivity() {
         tvClassificationValue3 = findViewById(R.id.tvClassificationValue3)
         swClassification = findViewById(R.id.swPoseClassification)
         vClassificationOption = findViewById(R.id.vClassificationOption)
-        btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
-        btnSwitch2TestVido = findViewById(R.id.btnTestVideo)
-        btnSwitch2Camera = findViewById(R.id.btnUseCamera)
+        //btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
+        //btnSwitch2TestVideo = findViewById(R.id.btnTestVideo)
+        //btnSwitch2Camera = findViewById(R.id.btnUseCamera)
+        btnAbord = findViewById(R.id.btnAbord)
 
         // Hinzugefügt
         tvAngle = TextView(this)
@@ -179,27 +182,33 @@ class CameraActivity : AppCompatActivity() {
             requestCameraPermission()
         }
 
-        btnSwitch2UploadVideo.setOnClickListener {
-            // ToDo: let user upload video from files
-            // 1) request permission to access files
-            // 2) open file picker
-//            // 3) get video file and pass to function
-//            if (!isExternalStoragePermissionGranted()) {
-//                requestExternalStoragePermission()
-//            } else {
-//                openVideo()
-//            }
-            showToast("Function not implemented yet")
-        }
+//        btnSwitch2UploadVideo.setOnClickListener {
+//            // ToDo: let user upload video from files
+//            // 1) request permission to access files
+//            // 2) open file picker
+////            // 3) get video file and pass to function
+////            if (!isExternalStoragePermissionGranted()) {
+////                requestExternalStoragePermission()
+////            } else {
+////                openVideo()
+////            }
+//            showToast("Function not implemented yet")
+//        }
 
-        btnSwitch2TestVido.setOnClickListener {
+//        btnSwitch2TestVideo.setOnClickListener {
+//            onPause()
+//            val i = Intent(this@CameraActivity, VideoActivity::class.java)
+//            startActivity(i)
+//        }
+//
+//        btnSwitch2Camera.setOnClickListener {
+//            val i = Intent(this@CameraActivity, CameraActivity::class.java)
+//            startActivity(i)
+//        }
+
+        btnAbord.setOnClickListener {
             onPause()
-            val i = Intent(this@CameraActivity, VideoActivity::class.java)
-            startActivity(i)
-        }
-
-        btnSwitch2Camera.setOnClickListener {
-            val i = Intent(this@CameraActivity, CameraActivity::class.java)
+            val i = Intent(this@CameraActivity, SelectionActivity::class.java)
             startActivity(i)
         }
 

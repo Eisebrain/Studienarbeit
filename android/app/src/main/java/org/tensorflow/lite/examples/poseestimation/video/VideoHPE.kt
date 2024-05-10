@@ -107,6 +107,15 @@ class VideoHPE(
         this.spineTracker = spineTracker
     }
 
+    fun close() {
+        synchronized(lock) {
+            detector?.close()
+            detector = null
+            classifier?.close()
+            classifier = null
+        }
+    }
+
     // process image
     private fun processImage(bitmap: Bitmap) {
         val persons = mutableListOf<Person>()

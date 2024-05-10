@@ -25,6 +25,7 @@
     <string name="squat">Squat</string>
     <string name="live_analysis">Live analysis</string>
     <string name="video_upload">Video upload</string>
+    <string name="abord">Return to selection</string>
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>
