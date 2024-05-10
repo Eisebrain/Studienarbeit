@@ -20,6 +20,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.Type
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
+import java.lang.IllegalStateException
 
 class VideoActivity : AppCompatActivity() {
 
@@ -41,9 +42,6 @@ class VideoActivity : AppCompatActivity() {
 
 
     // buttons to switch between activities
-//    private lateinit var btnSwitch2UploadVideo: Button
-//    private lateinit var btnSwitch2TestVideo: Button
-//    private lateinit var btnSwitch2Camera: Button
     private lateinit var btnAbord: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,27 +50,9 @@ class VideoActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         surfaceView = findViewById(R.id.surfaceViewVideo)
-//        btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
-//        btnSwitch2TestVideo = findViewById(R.id.btnTestVideo)
-//        btnSwitch2Camera = findViewById(R.id.btnUseCamera)
+
         btnAbord = findViewById(R.id.btnAbord)
-//        btnSwitch2UploadVideo.setOnClickListener {
-//            // ToDo: let user upload video from files
-//            // 1) request permission to access files
-//            // 2) open file picker
-//            // 3) get video file and pass to function
-//            showToast("Function not implemented yet")
-//        }
-//
-//        btnSwitch2TestVideo.setOnClickListener {
-//            val i = Intent(this@VideoActivity, VideoActivity::class.java)
-//            startActivity(i)
-//        }
-//
-//        btnSwitch2Camera.setOnClickListener {
-//            val i = Intent(this@VideoActivity, CameraActivity::class.java)
-//            startActivity(i)
-//        }
+
 
         btnAbord.setOnClickListener {
             onPause()

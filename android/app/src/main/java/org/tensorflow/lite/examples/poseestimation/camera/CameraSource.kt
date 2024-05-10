@@ -277,7 +277,7 @@ class CameraSource(
         )
 
         val holder = surfaceView.holder
-        val surfaceCanvas = holder.lockCanvas()
+        val surfaceCanvas = holder?.lockCanvas()
         surfaceCanvas?.let { canvas ->
             val screenWidth: Int
             val screenHeight: Int
