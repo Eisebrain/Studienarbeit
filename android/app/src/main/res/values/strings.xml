@@ -16,6 +16,9 @@
     <string name="string_camera_input">Camera</string>
     <string name="testvideo">TestVideo</string>
     <string name="spinecurvature">spineCurvature</string>
+    <string name="app_name">Smart Workout</string>
+    <string name="init_text">\n\nTrain smart not hard! \n\n Choose your exercise and upload a video of you doing it or do it live, to get feedback on your performance</string>
+    <string name="get_started">Get started</string>
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>
