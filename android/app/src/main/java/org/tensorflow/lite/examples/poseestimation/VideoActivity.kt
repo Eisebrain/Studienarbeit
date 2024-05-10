@@ -20,7 +20,6 @@ import org.tensorflow.lite.examples.poseestimation.ml.Type
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
-import java.lang.IllegalStateException
 
 class VideoActivity : AppCompatActivity() {
 
@@ -49,6 +48,7 @@ class VideoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_video)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        /** A [SurfaceView] for video preview.   */
         surfaceView = findViewById(R.id.surfaceViewVideo)
 
         btnAbord = findViewById(R.id.btnAbord)
