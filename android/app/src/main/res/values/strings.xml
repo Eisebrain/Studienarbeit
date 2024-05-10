@@ -19,6 +19,12 @@
     <string name="app_name">Smart Workout</string>
     <string name="init_text">\n\nTrain smart not hard! \n\n Choose your exercise and upload a video of you doing it or do it live, to get feedback on your performance</string>
     <string name="get_started">Get started</string>
+    <string name="fitness_app">Fitness App</string>
+    <string name="select_workout">Select your workout and video input</string>
+    <string name="l_sit">L-Sit</string>
+    <string name="squat">Squat</string>
+    <string name="live_analysis">Live analysis</string>
+    <string name="video_upload">Video upload</string>
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>

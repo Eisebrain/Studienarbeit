@@ -1,19 +1,19 @@
 {
   "buildFiles": [
-    "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\libcxx_helper\\CMakeLists.txt"
+    "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit\\android\\opencv-4.8.1\\libcxx_helper\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
       "C:\\Users\\Timo\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
       "-C",
-      "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\.cxx\\Debug\\3h41a122\\x86",
+      "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit\\android\\opencv-4.8.1\\.cxx\\Debug\\3h41a122\\x86",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "C:\\Users\\Timo\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
     "-C",
-    "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\.cxx\\Debug\\3h41a122\\x86",
+    "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit\\android\\opencv-4.8.1\\.cxx\\Debug\\3h41a122\\x86",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
@@ -21,7 +21,7 @@
       "toolchain": "toolchain",
       "abi": "x86",
       "artifactName": "opencv_jni_shared",
-      "output": "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\.cxx\\Debug\\3h41a122\\x86\\libopencv_jni_shared.a"
+      "output": "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit\\android\\opencv-4.8.1\\.cxx\\Debug\\3h41a122\\x86\\libopencv_jni_shared.a"
     }
   },
   "toolchains": {

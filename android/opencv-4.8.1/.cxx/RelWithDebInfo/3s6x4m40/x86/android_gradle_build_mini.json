@@ -1,26 +1,26 @@
 {
   "buildFiles": [
-    "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\libcxx_helper\\CMakeLists.txt"
+    "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit\\android\\opencv-4.8.1\\libcxx_helper\\CMakeLists.txt"
   ],
   "cleanCommandsComponents": [
     [
       "C:\\Users\\Timo\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
       "-C",
-      "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\.cxx\\RelWithDebInfo\\3s6x4m40\\x86",
+      "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit\\android\\opencv-4.8.1\\.cxx\\RelWithDebInfo\\3s6x4m40\\x86",
       "clean"
     ]
   ],
   "buildTargetsCommandComponents": [
     "C:\\Users\\Timo\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
     "-C",
-    "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\.cxx\\RelWithDebInfo\\3s6x4m40\\x86",
+    "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit\\android\\opencv-4.8.1\\.cxx\\RelWithDebInfo\\3s6x4m40\\x86",
     "{LIST_OF_TARGETS_TO_BUILD}"
   ],
   "libraries": {
     "opencv_jni_shared::@6890427a1f51a3e7e1df": {
       "artifactName": "opencv_jni_shared",
       "abi": "x86",
-      "output": "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit-Android\\android\\opencv-4.8.1\\.cxx\\RelWithDebInfo\\3s6x4m40\\x86\\libopencv_jni_shared.a",
+      "output": "C:\\Users\\Timo\\AndroidStudioProjects\\Studienarbeit\\android\\opencv-4.8.1\\.cxx\\RelWithDebInfo\\3s6x4m40\\x86\\libopencv_jni_shared.a",
       "runtimeFiles": []
     }
   }

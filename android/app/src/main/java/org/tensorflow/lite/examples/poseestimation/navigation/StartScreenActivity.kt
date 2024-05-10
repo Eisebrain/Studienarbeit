@@ -1,10 +1,11 @@
-package org.tensorflow.lite.examples.poseestimation
+package org.tensorflow.lite.examples.poseestimation.navigation
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import org.tensorflow.lite.examples.poseestimation.R
 
 class StartScreenActivity : AppCompatActivity() {
     private lateinit var btnGetStarted: Button
@@ -18,14 +19,9 @@ class StartScreenActivity : AppCompatActivity() {
 
 
         btnGetStarted.setOnClickListener {
-            showToast("Function not implemented yet!")
-
-//            val i = Intent(this@StartScreenActivity, StartScreenActivity::class.java)
-//            startActivity(i)
+            val i = Intent(this@StartScreenActivity, SelectionActivity::class.java)
+            startActivity(i)
+            finish()
         }
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

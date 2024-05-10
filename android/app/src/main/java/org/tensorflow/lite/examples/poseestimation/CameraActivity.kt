@@ -42,7 +42,7 @@ import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
 
 
-class MainActivity : AppCompatActivity() {
+class CameraActivity : AppCompatActivity() {
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
     }
@@ -194,12 +194,12 @@ class MainActivity : AppCompatActivity() {
 
         btnSwitch2TestVido.setOnClickListener {
             onPause()
-            val i = Intent(this@MainActivity, VideoActivity::class.java)
+            val i = Intent(this@CameraActivity, VideoActivity::class.java)
             startActivity(i)
         }
 
         btnSwitch2Camera.setOnClickListener {
-            val i = Intent(this@MainActivity, MainActivity::class.java)
+            val i = Intent(this@CameraActivity, CameraActivity::class.java)
             startActivity(i)
         }
 

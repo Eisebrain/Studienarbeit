@@ -1,1 +1,1 @@
-C:\Users\Timo\AndroidStudioProjects\Studienarbeit-Android\android\opencv-4.8.1\build\intermediates\cxx\Debug\3h41a122\obj\x86
+C:\Users\Timo\AndroidStudioProjects\Studienarbeit\android\opencv-4.8.1\build\intermediates\cxx\Debug\3h41a122\obj\x86

@@ -1,1 +1,1 @@
-C:\Users\Timo\AndroidStudioProjects\Studienarbeit-Android\android\opencv-4.8.1\libcxx_helper\CMakeLists.txt
+C:\Users\Timo\AndroidStudioProjects\Studienarbeit\android\opencv-4.8.1\libcxx_helper\CMakeLists.txt

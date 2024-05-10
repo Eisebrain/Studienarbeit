@@ -68,7 +68,7 @@ class VideoActivity : AppCompatActivity() {
         }
 
         btnSwitch2Camera.setOnClickListener {
-            val i = Intent(this@VideoActivity, MainActivity::class.java)
+            val i = Intent(this@VideoActivity, CameraActivity::class.java)
             startActivity(i)
         }
 
