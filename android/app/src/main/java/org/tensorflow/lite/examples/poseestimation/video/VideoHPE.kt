@@ -51,15 +51,6 @@ class VideoHPE(
 
     private var retriever: MediaMetadataRetriever? = null
 
-    /** Readers used as buffers for camera still shots */
-    private var imageReader: ImageReader? = null
-
-    /** [HandlerThread] where all buffer reading operations run */
-    private var imageReaderThread: HandlerThread? = null
-
-    /** [Handler] corresponding to [imageReaderThread] */
-    private var imageReaderHandler: Handler? = null
-
     suspend fun initVideo() {
         if (OpenCVLoader.initDebug()) {
             println("OpenCV is loaded")
@@ -92,6 +83,8 @@ class VideoHPE(
                     }
                     // Inkrementiere die aktuelle Zeit um das Intervall zwischen den Frames
                     currentTimeMs += frameIntervalMs
+
+                    listener?.onFPSListener((frameIntervalMs/10).toInt())
                 }
                 catch(e: IllegalStateException) {
                     println("Error: ${e.message}")
@@ -156,8 +149,7 @@ class VideoHPE(
 
             isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
             if (isSpineStraight != null) {
-                var text = ""
-                text = if (isSpineStraight!!) {
+                val text = if (isSpineStraight!!) {
                     // Todo: sent to view to update textview (tvSpineCurvature)
                     "Spine is straight"
                 } else {

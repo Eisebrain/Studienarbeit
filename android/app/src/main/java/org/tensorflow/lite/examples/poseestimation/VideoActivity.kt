@@ -4,8 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.SurfaceView
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -23,7 +26,7 @@ import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
 
 class VideoActivity : AppCompatActivity() {
 
-    // surface view to display video
+    /** A [SurfaceView] for video preview.   */
     private lateinit var surfaceView: SurfaceView
 
     /** Default pose estimation model is 1 (MoveNet Thunder)
@@ -37,18 +40,26 @@ class VideoActivity : AppCompatActivity() {
     /** Default device is CPU */
     private var device = Device.CPU
 
-    private var videoHPE: VideoHPE? = null
+    private lateinit var tvScore: TextView
+    private lateinit var tvFPS: TextView
+    private lateinit var spnDevice: Spinner
+    private lateinit var spnModel: Spinner
+    private lateinit var spnTracker: Spinner
+    private lateinit var vTrackerOption: View
 
-
-    // buttons to switch between activities
     private lateinit var btnAbord: Button
+    private var videoHPE: VideoHPE? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        /** A [SurfaceView] for video preview.   */
+        tvScore = findViewById(R.id.tvScore)
+        tvFPS = findViewById(R.id.tvFps)
+        spnModel = findViewById(R.id.spnModel)
+        spnDevice = findViewById(R.id.spnDevice)
+        spnTracker = findViewById(R.id.spnTracker)
+        vTrackerOption = findViewById(R.id.vTrackerOption)
         surfaceView = findViewById(R.id.surfaceViewVideo)
 
         btnAbord = findViewById(R.id.btnAbord)
@@ -74,7 +85,19 @@ class VideoActivity : AppCompatActivity() {
             Uri.parse("android.resource://" + packageName + "/" + R.raw.test_video_functionalshirt)
 
         // Initialize VideoHPE
-        videoHPE = VideoHPE(surfaceView, videoUri)
+        videoHPE = VideoHPE(surfaceView, videoUri, object : VideoHPE.VideoHPEListener {
+            override fun onFPSListener(fps: Int) {
+                tvFPS.text = getString(R.string.tfe_pe_tv_fps, fps)
+            }
+
+            override fun onDetectedInfo(
+                personScore: Float?,
+                poseLabels: List<Pair<String, Float>>?
+            ) {
+                tvScore.text = getString(R.string.tfe_pe_tv_score, personScore ?: 0f)
+            }
+
+        })
         lifecycleScope.launch(Dispatchers.Main) {
             videoHPE?.initVideo()
         }

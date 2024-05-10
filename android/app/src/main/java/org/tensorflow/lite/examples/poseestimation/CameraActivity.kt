@@ -65,9 +65,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var spnModel: Spinner
     private lateinit var spnTracker: Spinner
     private lateinit var vTrackerOption: View
-    private lateinit var tvClassificationValue1: TextView
-    private lateinit var tvClassificationValue2: TextView
-    private lateinit var tvClassificationValue3: TextView
+
     private lateinit var btnAbord: Button
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
@@ -196,20 +194,6 @@ class CameraActivity : AppCompatActivity() {
                             poseLabels: List<Pair<String, Float>>?
                         ) {
                             tvScore.text = getString(R.string.tfe_pe_tv_score, personScore ?: 0f)
-                            poseLabels?.sortedByDescending { it.second }?.let {
-                                tvClassificationValue1.text = getString(
-                                    R.string.tfe_pe_tv_classification_value,
-                                    convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-                                )
-                                tvClassificationValue2.text = getString(
-                                    R.string.tfe_pe_tv_classification_value,
-                                    convertPoseLabels(if (it.size >= 2) it[1] else null)
-                                )
-                                tvClassificationValue3.text = getString(
-                                    R.string.tfe_pe_tv_classification_value,
-                                    convertPoseLabels(if (it.size >= 3) it[2] else null)
-                                )
-                            }
                         }
 
                     }).apply {
@@ -238,11 +222,6 @@ class CameraActivity : AppCompatActivity() {
 
         }
         // ncreatePoseEstimator()
-    }
-
-    private fun convertPoseLabels(pair: Pair<String, Float>?): String {
-        if (pair == null) return "empty"
-        return "${pair.first} (${String.format("%.2f", pair.second)})"
     }
 
     private fun isPoseClassifier() {
