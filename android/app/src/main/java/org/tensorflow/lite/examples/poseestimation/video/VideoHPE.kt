@@ -18,6 +18,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
 import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import java.util.Timer
 import org.opencv.android.OpenCVLoader
+import java.lang.IllegalStateException
 
 
 class VideoHPE(
@@ -48,14 +49,7 @@ class VideoHPE(
     private var framesPerSecond = 0
     private var frameRate = 29.99f
 
-    /** Readers used as buffers for camera still shots */
-    private var imageReader: ImageReader? = null
-
-    /** [HandlerThread] where all buffer reading operations run */
-    private var imageReaderThread: HandlerThread? = null
-
-    /** [Handler] corresponding to [imageReaderThread] */
-    private var imageReaderHandler: Handler? = null
+    private var retriever: MediaMetadataRetriever? = null
 
     suspend fun initVideo() {
         if (OpenCVLoader.initDebug()) {
@@ -67,10 +61,10 @@ class VideoHPE(
 
         GlobalScope.launch(Dispatchers.IO) {
             // get bitmap from video
-            val retriever = MediaMetadataRetriever()
-            retriever.setDataSource(surfaceView.context, videoUri)
+            retriever = MediaMetadataRetriever()
+            retriever!!.setDataSource(surfaceView.context, videoUri)
 
-            val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+            val duration = retriever!!.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             val durationMs = duration?.toLong() ?: 0
 
             val frameIntervalMs =
@@ -79,16 +73,25 @@ class VideoHPE(
             // process bitmap
             var currentTimeMs = 0L
             while (currentTimeMs < durationMs) {
-                val bitmap = retriever.getFrameAtTime(
-                    currentTimeMs * 1000,
-                    MediaMetadataRetriever.OPTION_CLOSEST
-                )
-                if (bitmap != null) {
-                    processImage(bitmap)
+                try {
+                    val bitmap = retriever!!.getFrameAtTime(
+                        currentTimeMs * 1000,
+                        MediaMetadataRetriever.OPTION_CLOSEST
+                    )
+                    if (bitmap != null) {
+                        processImage(bitmap)
+                    }
+                    // Inkrementiere die aktuelle Zeit um das Intervall zwischen den Frames
+                    currentTimeMs += frameIntervalMs
+
+                    listener?.onFPSListener((frameIntervalMs/10).toInt())
                 }
-                // Inkrementiere die aktuelle Zeit um das Intervall zwischen den Frames
-                currentTimeMs += frameIntervalMs
+                catch(e: IllegalStateException) {
+                    println("Error: ${e.message}")
+                    break
+                }
             }
+            retriever?.close()
         }
 
     }
@@ -105,6 +108,16 @@ class VideoHPE(
 
     fun setSpineTracker(spineTracker: SpineTracker) {
         this.spineTracker = spineTracker
+    }
+
+    fun close() {
+        retriever?.close()
+        synchronized(lock) {
+            detector?.close()
+            detector = null
+            classifier?.close()
+            classifier = null
+        }
     }
 
     // process image
@@ -136,8 +149,7 @@ class VideoHPE(
 
             isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
             if (isSpineStraight != null) {
-                var text = ""
-                text = if (isSpineStraight!!) {
+                val text = if (isSpineStraight!!) {
                     // Todo: sent to view to update textview (tvSpineCurvature)
                     "Spine is straight"
                 } else {
@@ -160,7 +172,7 @@ class VideoHPE(
         )
 
         val holder = surfaceView.holder
-        val surfaceCanvas = holder.lockCanvas()
+        val surfaceCanvas = holder?.lockCanvas()
         surfaceCanvas?.let { canvas ->
             val screenWidth: Int
             val screenHeight: Int

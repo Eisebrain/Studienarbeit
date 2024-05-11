@@ -1,11 +1,15 @@
 package org.tensorflow.lite.examples.poseestimation
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.SurfaceView
+import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -17,12 +21,14 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNet
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNetMultiPose
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import org.tensorflow.lite.examples.poseestimation.ml.Type
+import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
+import kotlin.properties.Delegates
 
 class VideoActivity : AppCompatActivity() {
 
-    // surface view to display video
+    /** A [SurfaceView] for video preview.   */
     private lateinit var surfaceView: SurfaceView
 
     /** Default pose estimation model is 1 (MoveNet Thunder)
@@ -36,43 +42,81 @@ class VideoActivity : AppCompatActivity() {
     /** Default device is CPU */
     private var device = Device.CPU
 
+    private lateinit var tvScore: TextView
+    private lateinit var tvFPS: TextView
+    private lateinit var spnDevice: Spinner
+    private lateinit var spnModel: Spinner
+    private lateinit var spnTracker: Spinner
+    private lateinit var vTrackerOption: View
+
+    /** Button to abort the exercise and return to [SelectionActivity]*/
+    private lateinit var btnAbord: Button
+
+    /** Selected exercise from [SelectionActivity]
+     * selectedExercise == R.id.imageView1 -> L-Sit
+     * selectedExercise == R.id.imageView2 -> Squat */
+    private var selectedExercise by Delegates.notNull<Int>()
+
     private var videoHPE: VideoHPE? = null
-
-
-    // buttons to switch between activities
-    private lateinit var btnSwitch2UploadVideo: Button
-    private lateinit var btnSwitch2TestVideo: Button
-    private lateinit var btnSwitch2Camera: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
+        tvScore = findViewById(R.id.tvScore)
+        tvFPS = findViewById(R.id.tvFps)
+        spnModel = findViewById(R.id.spnModel)
+        spnDevice = findViewById(R.id.spnDevice)
+        spnTracker = findViewById(R.id.spnTracker)
+        vTrackerOption = findViewById(R.id.vTrackerOption)
         surfaceView = findViewById(R.id.surfaceViewVideo)
-        btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
-        btnSwitch2TestVideo = findViewById(R.id.btnTestVideo)
-        btnSwitch2Camera = findViewById(R.id.btnUseCamera)
 
-        btnSwitch2UploadVideo.setOnClickListener {
-            // ToDo: let user upload video from files
-            // 1) request permission to access files
-            // 2) open file picker
-            // 3) get video file and pass to function
-            showToast("Function not implemented yet")
-        }
+        btnAbord = findViewById(R.id.btnAbord)
 
-        btnSwitch2TestVideo.setOnClickListener {
-            val i = Intent(this@VideoActivity, VideoActivity::class.java)
+        selectedExercise = SelectionActivity.selectedImage
+
+
+        btnAbord.setOnClickListener {
+            onPause()
+            val i = Intent(this@VideoActivity, SelectionActivity::class.java)
             startActivity(i)
         }
 
-        btnSwitch2Camera.setOnClickListener {
-            val i = Intent(this@VideoActivity, MainActivity::class.java)
-            startActivity(i)
-        }
+        showStartTimerDialog()
+    }
 
-        openVideo()
+    private fun showStartTimerDialog() {
+        AlertDialog.Builder(this).apply {
+            // display the selected exercise
+            if (selectedExercise == R.id.imageView1) {
+                setTitle("L-Sit")
+                setMessage(R.string.l_sit_explanation)
+            } else if (selectedExercise == R.id.imageView2) {
+                setTitle("Squat")
+                setMessage(R.string.squat_explanation)
+            }
+
+            setPositiveButton("Start") { dialog, which ->
+                // Startet den Timer, wenn der Nutzer auf "Start" klickt
+                //startCountdownTimer()
+                //hide the dialog
+                dialog.dismiss()
+                openVideo()
+            }
+            setNegativeButton("Back to selection") { dialog, which ->
+                // go back to selection
+                val i = Intent(this@VideoActivity, SelectionActivity::class.java)
+                startActivity(i)
+                finish()
+            }
+            setCancelable(false) // Verhindert das Schließen des Dialogs durch Zurück-Taste oder Tippen außerhalb
+        }.show()
+    }
+
+    override fun onPause() {
+        videoHPE?.close()
+        videoHPE = null
+        super.onPause()
     }
 
     private fun openVideo() {
@@ -81,7 +125,19 @@ class VideoActivity : AppCompatActivity() {
             Uri.parse("android.resource://" + packageName + "/" + R.raw.test_video_functionalshirt)
 
         // Initialize VideoHPE
-        videoHPE = VideoHPE(surfaceView, videoUri)
+        videoHPE = VideoHPE(surfaceView, videoUri, object : VideoHPE.VideoHPEListener {
+            override fun onFPSListener(fps: Int) {
+                tvFPS.text = getString(R.string.tfe_pe_tv_fps, fps)
+            }
+
+            override fun onDetectedInfo(
+                personScore: Float?,
+                poseLabels: List<Pair<String, Float>>?
+            ) {
+                tvScore.text = getString(R.string.tfe_pe_tv_score, personScore ?: 0f)
+            }
+
+        })
         lifecycleScope.launch(Dispatchers.Main) {
             videoHPE?.initVideo()
         }

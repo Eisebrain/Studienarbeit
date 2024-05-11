@@ -21,17 +21,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Process
 import android.view.SurfaceView
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
@@ -40,9 +37,11 @@ import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
+import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
+import kotlin.properties.Delegates
 
 
-class MainActivity : AppCompatActivity() {
+class CameraActivity : AppCompatActivity() {
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
     }
@@ -61,23 +60,21 @@ class MainActivity : AppCompatActivity() {
     /** Default device is CPU */
     private var device = Device.CPU
 
-    // Hinzugefügt
-    private lateinit var tvAngle: TextView
-
     private lateinit var tvScore: TextView
     private lateinit var tvFPS: TextView
     private lateinit var spnDevice: Spinner
     private lateinit var spnModel: Spinner
     private lateinit var spnTracker: Spinner
     private lateinit var vTrackerOption: View
-    private lateinit var tvClassificationValue1: TextView
-    private lateinit var tvClassificationValue2: TextView
-    private lateinit var tvClassificationValue3: TextView
-    private lateinit var swClassification: SwitchCompat
-    private lateinit var vClassificationOption: View
-    private lateinit var btnSwitch2UploadVideo: Button
-    private lateinit var btnSwitch2TestVido: Button
-    private lateinit var btnSwitch2Camera: Button
+
+    /** Button to abort the exercise and return to [SelectionActivity]*/
+    private lateinit var btnAbord: Button
+
+    /** Selected exercise from [SelectionActivity]
+     * selectedExercise == R.id.imageView1 -> L-Sit
+     * selectedExercise == R.id.imageView2 -> Squat */
+    private var selectedExercise by Delegates.notNull<Int>()
+
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
     private val requestPermissionLauncher =
@@ -133,13 +130,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private var setClassificationListener =
-        CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            showClassificationResult(isChecked)
-            isClassifyPose = isChecked
-            isPoseClassifier()
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -152,60 +142,55 @@ class MainActivity : AppCompatActivity() {
         spnTracker = findViewById(R.id.spnTracker)
         vTrackerOption = findViewById(R.id.vTrackerOption)
         surfaceView = findViewById(R.id.surfaceView)
-        tvClassificationValue1 = findViewById(R.id.tvClassificationValue1)
-        tvClassificationValue2 = findViewById(R.id.tvClassificationValue2)
-        tvClassificationValue3 = findViewById(R.id.tvClassificationValue3)
-        swClassification = findViewById(R.id.swPoseClassification)
-        vClassificationOption = findViewById(R.id.vClassificationOption)
-        btnSwitch2UploadVideo = findViewById(R.id.btnUploadVideo)
-        btnSwitch2TestVido = findViewById(R.id.btnTestVideo)
-        btnSwitch2Camera = findViewById(R.id.btnUseCamera)
 
-        // Hinzugefügt
-        tvAngle = TextView(this)
-        tvAngle.id = View.generateViewId()
-        tvAngle.text = "Angle: 0.0 degrees"
-        tvAngle.textSize = 16f
-        tvAngle.setTextColor(Color.BLACK)
-        tvAngle.layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        //val mainLayout: LinearLayout = findViewById(R.id.activity_main) // Ersetze mainLayout durch die ID deines Hauptlayouts
-        //mainLayout.addView(tvAngle)
+        btnAbord = findViewById(R.id.btnAbord)
 
-        swClassification.setOnCheckedChangeListener(setClassificationListener)
+        selectedExercise = SelectionActivity.selectedImage
+
+
+        // swClassification.setOnCheckedChangeListener(setClassificationListener)
         if (!isCameraPermissionGranted()) {
             requestCameraPermission()
         }
 
-        btnSwitch2UploadVideo.setOnClickListener {
-            // ToDo: let user upload video from files
-            // 1) request permission to access files
-            // 2) open file picker
-//            // 3) get video file and pass to function
-//            if (!isExternalStoragePermissionGranted()) {
-//                requestExternalStoragePermission()
-//            } else {
-//                openVideo()
-//            }
-            showToast("Function not implemented yet")
-        }
-
-        btnSwitch2TestVido.setOnClickListener {
+        btnAbord.setOnClickListener {
             onPause()
-            val i = Intent(this@MainActivity, VideoActivity::class.java)
-            startActivity(i)
-        }
-
-        btnSwitch2Camera.setOnClickListener {
-            val i = Intent(this@MainActivity, MainActivity::class.java)
+            val i = Intent(this@CameraActivity, SelectionActivity::class.java)
             startActivity(i)
         }
 
         spnModel.setSelection(modelPos)
-
         initSpinner()
+
+        showStartTimerDialog()
+    }
+
+    private fun showStartTimerDialog() {
+        AlertDialog.Builder(this).apply {
+            // display the selected exercise
+            if (selectedExercise == R.id.imageView1) {
+                setTitle("L-Sit")
+                setMessage(R.string.l_sit_explanation)
+            } else if (selectedExercise == R.id.imageView2) {
+                setTitle("Squat")
+                setMessage(R.string.squat_explanation)
+            }
+
+            setPositiveButton("Start") { dialog, which ->
+                // Startet den Timer, wenn der Nutzer auf "Start" klickt
+                //startCountdownTimer()
+                //hide the dialog
+                dialog.dismiss()
+            }
+            setNegativeButton("Back to selection") { dialog, which ->
+                // go back to selection
+                val i = Intent(this@CameraActivity, SelectionActivity::class.java)
+                startActivity(i)
+                finish()
+
+            }
+            setCancelable(false) // Verhindert das Schließen des Dialogs durch Zurück-Taste oder Tippen außerhalb
+        }.show()
     }
 
     override fun onStart() {
@@ -248,20 +233,6 @@ class MainActivity : AppCompatActivity() {
                             poseLabels: List<Pair<String, Float>>?
                         ) {
                             tvScore.text = getString(R.string.tfe_pe_tv_score, personScore ?: 0f)
-                            poseLabels?.sortedByDescending { it.second }?.let {
-                                tvClassificationValue1.text = getString(
-                                    R.string.tfe_pe_tv_classification_value,
-                                    convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-                                )
-                                tvClassificationValue2.text = getString(
-                                    R.string.tfe_pe_tv_classification_value,
-                                    convertPoseLabels(if (it.size >= 2) it[1] else null)
-                                )
-                                tvClassificationValue3.text = getString(
-                                    R.string.tfe_pe_tv_classification_value,
-                                    convertPoseLabels(if (it.size >= 3) it[2] else null)
-                                )
-                            }
                         }
 
                     }).apply {
@@ -290,11 +261,6 @@ class MainActivity : AppCompatActivity() {
 
         }
         // ncreatePoseEstimator()
-    }
-
-    private fun convertPoseLabels(pair: Pair<String, Float>?): String {
-        if (pair == null) return "empty"
-        return "${pair.first} (${String.format("%.2f", pair.second)})"
     }
 
     private fun isPoseClassifier() {
@@ -372,7 +338,6 @@ class MainActivity : AppCompatActivity() {
         val poseDetector = when (modelPos) {
             0 -> {
                 // MoveNet Lightning (SinglePose)
-                showPoseClassifier(true)
                 showDetectionScore(true)
                 showTracker(false)
                 MoveNet.create(this, device, ModelType.Lightning)
@@ -380,7 +345,6 @@ class MainActivity : AppCompatActivity() {
 
             1 -> {
                 // MoveNet Thunder (SinglePose)
-                showPoseClassifier(true)
                 showDetectionScore(true)
                 showTracker(false)
                 MoveNet.create(this, device, ModelType.Thunder)
@@ -388,7 +352,6 @@ class MainActivity : AppCompatActivity() {
 
             2 -> {
                 // MoveNet (Lightning) MultiPose
-                showPoseClassifier(false)
                 showDetectionScore(false)
                 // Movenet MultiPose Dynamic does not support GPUDelegate
                 if (device == Device.GPU) {
@@ -404,7 +367,6 @@ class MainActivity : AppCompatActivity() {
 
             3 -> {
                 // PoseNet (SinglePose)
-                showPoseClassifier(true)
                 showDetectionScore(true)
                 showTracker(false)
                 PoseNet.create(this, device)
@@ -419,25 +381,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Show/hide the pose classification option.
-    private fun showPoseClassifier(isVisible: Boolean) {
-        vClassificationOption.visibility = if (isVisible) View.VISIBLE else View.GONE
-        if (!isVisible) {
-            swClassification.isChecked = false
-        }
-    }
 
     // Show/hide the detection score.
     private fun showDetectionScore(isVisible: Boolean) {
         tvScore.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    // Show/hide classification result.
-    private fun showClassificationResult(isVisible: Boolean) {
-        val visibility = if (isVisible) View.VISIBLE else View.GONE
-        tvClassificationValue1.visibility = visibility
-        tvClassificationValue2.visibility = visibility
-        tvClassificationValue3.visibility = visibility
     }
 
     // Show/hide the tracking options.
