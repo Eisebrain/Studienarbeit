@@ -34,7 +34,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
+import org.tensorflow.lite.examples.poseestimation.camera.CameraHPE
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
@@ -75,7 +75,7 @@ class CameraActivity : AppCompatActivity() {
      * selectedExercise == R.id.imageView2 -> Squat */
     private var selectedExercise by Delegates.notNull<Int>()
 
-    private var cameraSource: CameraSource? = null
+    private var cameraHPE: CameraHPE? = null
     private var isClassifyPose = false
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -200,13 +200,13 @@ class CameraActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        cameraSource?.resume()
+        cameraHPE?.resume()
         super.onResume()
     }
 
     override fun onPause() {
-        cameraSource?.close()
-        cameraSource = null
+        cameraHPE?.close()
+        cameraHPE = null
         super.onPause()
     }
 
@@ -222,9 +222,9 @@ class CameraActivity : AppCompatActivity() {
     // open camera
     private fun openCamera() {
         if (isCameraPermissionGranted()) {
-            if (cameraSource == null) {
-                cameraSource =
-                    CameraSource(surfaceView, object : CameraSource.CameraSourceListener {
+            if (cameraHPE == null) {
+                cameraHPE =
+                    CameraHPE(surfaceView, selectedExercise, object : CameraHPE.CameraSourceListener {
                         override fun onFPSListener(fps: Int) {
                             tvFPS.text = getString(R.string.tfe_pe_tv_fps, fps)
                         }
@@ -241,7 +241,7 @@ class CameraActivity : AppCompatActivity() {
                     }
                 isPoseClassifier()
                 lifecycleScope.launch(Dispatchers.Main) {
-                    cameraSource?.initCamera()
+                    cameraHPE?.initCamera()
                 }
             }
             createPoseEstimator()
@@ -250,7 +250,7 @@ class CameraActivity : AppCompatActivity() {
 
 
     private fun isPoseClassifier() {
-        cameraSource?.setClassifier(if (isClassifyPose) PoseClassifier.create(this) else null)
+        cameraHPE?.setClassifier(if (isClassifyPose) PoseClassifier.create(this) else null)
     }
 
     // Initialize spinners to let user select model/accelerator/tracker.
@@ -309,7 +309,7 @@ class CameraActivity : AppCompatActivity() {
 
     // Change tracker for Movenet MultiPose model
     private fun changeTracker(position: Int) {
-        cameraSource?.setTracker(
+        cameraHPE?.setTracker(
             when (position) {
                 1 -> TrackerType.BOUNDING_BOX
                 2 -> TrackerType.KEYPOINTS
@@ -363,7 +363,7 @@ class CameraActivity : AppCompatActivity() {
             }
         }
         poseDetector?.let { detector ->
-            cameraSource?.setDetector(detector)
+            cameraHPE?.setDetector(detector)
         }
     }
 

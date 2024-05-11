@@ -2,11 +2,8 @@ package org.tensorflow.lite.examples.poseestimation.video
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.media.ImageReader
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Handler
-import android.os.HandlerThread
 import android.view.SurfaceView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -18,11 +15,17 @@ import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
 import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import java.util.Timer
 import org.opencv.android.OpenCVLoader
+import org.tensorflow.lite.examples.poseestimation.R
+import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import java.lang.IllegalStateException
 
 
 class VideoHPE(
     private val surfaceView: SurfaceView,
+    /** Selected exercise from [SelectionActivity]
+     * selectedExercise == R.id.imageView1 -> L-Sit
+     * selectedExercise == R.id.imageView2 -> Squat */
+    private val exerciseType: Int,
     private val videoUri: Uri,
     private val listener: VideoHPEListener? = null
 ) {
@@ -147,15 +150,30 @@ class VideoHPE(
         if (persons.isNotEmpty()) {
             listener?.onDetectedInfo(persons[0].score, classificationResult)
 
-            isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
-            if (isSpineStraight != null) {
-                val text = if (isSpineStraight!!) {
-                    // Todo: sent to view to update textview (tvSpineCurvature)
-                    "Spine is straight"
-                } else {
-                    "Spine is not straight"
+            // Selected exercise from [SelectionActivity]
+            when (exerciseType) {
+                R.id.imageView1 -> {
+                    // L-Sit
+                    // ToDo: Implement L-Sit exercise -> look at [CameraHPE.kt]
+                    /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
                 }
-                println(text)
+                R.id.imageView2 -> {
+                    // Squat
+                    // ToDo: Implement Squat exercise -> look at [CameraHPE.kt]
+                    /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
+
+                    // Squat -> perform spine curvature detection
+                    isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
+                    if (isSpineStraight != null) {
+                        val text = if (isSpineStraight!!) {
+                            // Todo: Do not log the result, but display it on the screen or give feedback to the user
+                            "Spine is straight"
+                        } else {
+                            "Spine is not straight"
+                        }
+                        println(text)
+                    }
+                }
             }
         }
         visualize(persons, bitmap)

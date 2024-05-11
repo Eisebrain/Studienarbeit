@@ -160,7 +160,7 @@ class VideoActivity : AppCompatActivity() {
     private fun openVideo() {
 
         // Initialize VideoHPE
-        videoHPE = VideoHPE(surfaceView, videoUri, object : VideoHPE.VideoHPEListener {
+        videoHPE = VideoHPE(surfaceView, selectedExercise, videoUri, object : VideoHPE.VideoHPEListener {
             override fun onFPSListener(fps: Int) {
                 tvFPS.text = getString(R.string.tfe_pe_tv_fps, fps)
             }

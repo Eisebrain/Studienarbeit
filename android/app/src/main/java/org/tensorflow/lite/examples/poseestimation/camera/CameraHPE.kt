@@ -33,6 +33,7 @@ import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.tensorflow.lite.examples.poseestimation.R
 import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
 import org.tensorflow.lite.examples.poseestimation.YuvToRgbConverter
 import org.tensorflow.lite.examples.poseestimation.data.Person
@@ -40,12 +41,18 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNetMultiPose
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
 import org.tensorflow.lite.examples.poseestimation.ml.TrackerType
+import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class CameraSource(
+class CameraHPE(
     private val surfaceView: SurfaceView,
+
+    /** Selected exercise from [SelectionActivity]
+     * exerciseType == R.id.imageView1 -> L-Sit
+     * exerciseType == R.id.imageView2 -> Squat */
+    private val exerciseType: Int,
     private val listener: CameraSourceListener? = null
 ) {
 
@@ -265,6 +272,20 @@ class CameraSource(
         // if the model returns only one item, show that item's score.
         if (persons.isNotEmpty()) {
             listener?.onDetectedInfo(persons[0].score, classificationResult)
+
+            // Selected exercise from [SelectionActivity]
+            when (exerciseType) {
+                R.id.imageView1 -> {
+                    // L-Sit
+                    // ToDo: Implement L-Sit exercise -> look at [VideoHPE.kt]
+                    /** the metrics should be the same as in [VideoHPE.kt], so you can make class for both */
+                }
+                R.id.imageView2 -> {
+                    // Squat
+                    // ToDo: Implement Squat exercise -> look at [VideoHPE.kt]
+                    /** the metrics should be the same as in [VideoHPE.kt], so you can make class for both */
+                }
+            }
         }
         visualize(persons, bitmap)
     }
