@@ -1,6 +1,7 @@
 <resources>
     <string name="tfe_pe_app_name">TFL Pose Estimation</string>
-    <string name="tfe_pe_request_permission">This app needs camera permission.</string>
+    <string name="tfe_pe_request_permission_camera">This app needs camera permission.</string>
+    <string name="tfe_pe_request_permission_storage">This app needs permission to access your storage.</string>
     <string name="tfe_pe_tv_score">Score: %.2f</string>
     <string name="tfe_pe_tv_model">Model: </string>
     <string name="tfe_pe_tv_fps">Fps: %d</string>
@@ -38,6 +39,7 @@
     <string name="live_analysis">Live analysis</string>
     <string name="video_upload">Video upload</string>
     <string name="abord">Return to selection</string>
+    <string name="tfe_pe_no_video_selected">No video selected!</string>
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>

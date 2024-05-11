@@ -91,10 +91,11 @@ class CameraActivity : AppCompatActivity() {
                 // same time, respect the user's decision. Don't link to system
                 // settings in an effort to convince the user to change their
                 // decision.
-                ErrorDialog.newInstance(getString(R.string.tfe_pe_request_permission))
+                ErrorDialog.newInstance(getString(R.string.tfe_pe_request_permission_camera))
                     .show(supportFragmentManager, FRAGMENT_DIALOG)
             }
         }
+
     private var changeModelListener = object : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
             // do nothing
@@ -247,21 +248,6 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    // check if permission is granted or not.
-    private fun isExternalStoragePermissionGranted(): Boolean {
-        return checkPermission(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Process.myPid(),
-            Process.myUid()
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun openVideo() {
-        if (isExternalStoragePermissionGranted()) {
-
-        }
-        // ncreatePoseEstimator()
-    }
 
     private fun isPoseClassifier() {
         cameraSource?.setClassifier(if (isClassifyPose) PoseClassifier.create(this) else null)
@@ -420,25 +406,6 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestExternalStoragePermission() {
-        when (PackageManager.PERMISSION_GRANTED) {
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) -> {
-                // You can use the API that requires the permission.
-                openVideo()
-            }
-
-            else -> {
-                // You can directly ask for the permission.
-                // The registered ActivityResultCallback gets the result of this request.
-                requestPermissionLauncher.launch(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            }
-        }
-    }
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
