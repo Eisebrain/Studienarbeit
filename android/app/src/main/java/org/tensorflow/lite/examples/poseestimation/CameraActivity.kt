@@ -38,6 +38,7 @@ import org.tensorflow.lite.examples.poseestimation.camera.CameraSource
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
+import kotlin.properties.Delegates
 
 
 class CameraActivity : AppCompatActivity() {
@@ -66,7 +67,14 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var spnTracker: Spinner
     private lateinit var vTrackerOption: View
 
+    /** Button to abort the exercise and return to [SelectionActivity]*/
     private lateinit var btnAbord: Button
+
+    /** Selected exercise from [SelectionActivity]
+     * selectedExercise == R.id.imageView1 -> L-Sit
+     * selectedExercise == R.id.imageView2 -> Squat */
+    private var selectedExercise by Delegates.notNull<Int>()
+
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
     private val requestPermissionLauncher =
@@ -137,6 +145,8 @@ class CameraActivity : AppCompatActivity() {
 
         btnAbord = findViewById(R.id.btnAbord)
 
+        selectedExercise = SelectionActivity.selectedImage
+
 
         // swClassification.setOnCheckedChangeListener(setClassificationListener)
         if (!isCameraPermissionGranted()) {
@@ -150,8 +160,45 @@ class CameraActivity : AppCompatActivity() {
         }
 
         spnModel.setSelection(modelPos)
-
+        showStartTimerDialog()
         initSpinner()
+    }
+
+    private fun showStartTimerDialog() {
+        AlertDialog.Builder(this).apply {
+            // display the selected exercise
+            if (selectedExercise == R.id.imageView1) {
+                setTitle("L-Sit")
+                setMessage(
+                    "You are going to have 10 seconds to get ready and after that you need to perform the L-Sit for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
+                            "\n- Straight back\n" +
+                            "- Keep rings stable\n" +
+                            "- Angle 90°\n" +
+                            "- Legs horizontal to the floor\n" +
+                            "- Hold for 3 seconds "
+                )
+            } else if (selectedExercise == R.id.imageView2) {
+                setTitle("Squat")
+                setMessage(
+                    "You are going to have 10 seconds to get ready and after that you need to perform the Squat for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
+                            "\n- Keep your back straight\n" +
+                            "- Go down to 90°\n" +
+                            "- Keep your head straight and look forward"
+                )
+            }
+
+
+            setPositiveButton("Start") { dialog, which ->
+                // Startet den Timer, wenn der Nutzer auf "Start" klickt
+                //startCountdownTimer()
+            }
+            setNegativeButton("Back to selection") { dialog, which ->
+                // go back to selection
+                finish()
+
+            }
+            setCancelable(false) // Verhindert das Schließen des Dialogs durch Zurück-Taste oder Tippen außerhalb
+        }.show()
     }
 
     override fun onStart() {

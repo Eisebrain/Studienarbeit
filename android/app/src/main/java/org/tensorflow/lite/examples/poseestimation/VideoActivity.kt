@@ -1,5 +1,6 @@
 package org.tensorflow.lite.examples.poseestimation
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -23,6 +24,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.Type
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
+import kotlin.properties.Delegates
 
 class VideoActivity : AppCompatActivity() {
 
@@ -47,7 +49,14 @@ class VideoActivity : AppCompatActivity() {
     private lateinit var spnTracker: Spinner
     private lateinit var vTrackerOption: View
 
+    /** Button to abort the exercise and return to [SelectionActivity]*/
     private lateinit var btnAbord: Button
+
+    /** Selected exercise from [SelectionActivity]
+     * selectedExercise == R.id.imageView1 -> L-Sit
+     * selectedExercise == R.id.imageView2 -> Squat */
+    private var selectedExercise by Delegates.notNull<Int>()
+
     private var videoHPE: VideoHPE? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,13 +73,54 @@ class VideoActivity : AppCompatActivity() {
 
         btnAbord = findViewById(R.id.btnAbord)
 
+        selectedExercise = SelectionActivity.selectedImage
+
 
         btnAbord.setOnClickListener {
             onPause()
             val i = Intent(this@VideoActivity, SelectionActivity::class.java)
             startActivity(i)
         }
+
+        showStartTimerDialog()
         openVideo()
+    }
+
+    private fun showStartTimerDialog() {
+        AlertDialog.Builder(this).apply {
+            // display the selected exercise
+            if (selectedExercise == R.id.imageView1) {
+                setTitle("L-Sit")
+                setMessage(
+                    "You are going to have 10 seconds to get ready and after that you need to perform the L-Sit for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
+                            "\n- Straight back\n" +
+                            "- Keep rings stable\n" +
+                            "- Angle 90°\n" +
+                            "- Legs horizontal to the floor\n" +
+                            "- Hold for 3 seconds "
+                )
+            } else if (selectedExercise == R.id.imageView2) {
+                setTitle("Squat")
+                setMessage(
+                    "You are going to have 10 seconds to get ready and after that you need to perform the Squat for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
+                            "\n- Keep your back straight\n" +
+                            "- Go down to 90°\n" +
+                            "- Keep your head straight and look forward"
+                )
+            }
+
+
+            setPositiveButton("Start") { dialog, which ->
+                // Startet den Timer, wenn der Nutzer auf "Start" klickt
+                //startCountdownTimer()
+            }
+            setNegativeButton("Back to selection") { dialog, which ->
+                // go back to selection
+                finish()
+
+            }
+            setCancelable(false) // Verhindert das Schließen des Dialogs durch Zurück-Taste oder Tippen außerhalb
+        }.show()
     }
 
     override fun onPause() {
