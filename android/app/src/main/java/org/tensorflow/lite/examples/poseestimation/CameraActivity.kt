@@ -160,8 +160,9 @@ class CameraActivity : AppCompatActivity() {
         }
 
         spnModel.setSelection(modelPos)
-        showStartTimerDialog()
         initSpinner()
+
+        showStartTimerDialog()
     }
 
     private fun showStartTimerDialog() {
@@ -169,31 +170,22 @@ class CameraActivity : AppCompatActivity() {
             // display the selected exercise
             if (selectedExercise == R.id.imageView1) {
                 setTitle("L-Sit")
-                setMessage(
-                    "You are going to have 10 seconds to get ready and after that you need to perform the L-Sit for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
-                            "\n- Straight back\n" +
-                            "- Keep rings stable\n" +
-                            "- Angle 90°\n" +
-                            "- Legs horizontal to the floor\n" +
-                            "- Hold for 3 seconds "
-                )
+                setMessage(R.string.l_sit_explanation)
             } else if (selectedExercise == R.id.imageView2) {
                 setTitle("Squat")
-                setMessage(
-                    "You are going to have 10 seconds to get ready and after that you need to perform the Squat for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
-                            "\n- Keep your back straight\n" +
-                            "- Go down to 90°\n" +
-                            "- Keep your head straight and look forward"
-                )
+                setMessage(R.string.squat_explanation)
             }
-
 
             setPositiveButton("Start") { dialog, which ->
                 // Startet den Timer, wenn der Nutzer auf "Start" klickt
                 //startCountdownTimer()
+                //hide the dialog
+                dialog.dismiss()
             }
             setNegativeButton("Back to selection") { dialog, which ->
                 // go back to selection
+                val i = Intent(this@CameraActivity, SelectionActivity::class.java)
+                startActivity(i)
                 finish()
 
             }

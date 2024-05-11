@@ -18,6 +18,18 @@
     <string name="spinecurvature">spineCurvature</string>
     <string name="app_name">Smart Workout</string>
     <string name="init_text">\n\nTrain smart not hard! \n\nChoose your exercise and upload a video of you doing it or do it live, to get feedback on your performance</string>
+
+    <string name="l_sit_explanation">"You are going to have 10 seconds to get ready and after that you need to perform the L-Sit for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n\n"
+                            "- Straight back\n"
+                            "- Keep rings stable\n"
+                            "- Angle 90°\n"
+                            "- Legs horizontal to the floor\n"
+                            "- Hold for 3 seconds "</string>
+    <string name="squat_explanation">"You are going to have 10 seconds to get ready and after that you need to perform the Squat for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n\n"
+                            "- Keep your back straight\n"
+                            "- Go down to 90°\n"
+                            "- Keep your head straight and look forward"</string>
+
     <string name="get_started">Get started</string>
     <string name="fitness_app">Fitness App</string>
     <string name="select_workout">Select your exercise and analysis method</string>
