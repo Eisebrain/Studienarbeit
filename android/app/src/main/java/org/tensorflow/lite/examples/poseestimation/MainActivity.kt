@@ -19,13 +19,11 @@ package org.tensorflow.lite.examples.poseestimation
 import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
 import android.view.SurfaceView
 import android.view.View
-import android.os.CountDownTimer
 import android.view.WindowManager
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -44,9 +42,8 @@ import android.graphics.Color
 import android.view.ViewGroup
 
 
-class LiveAnalysisActivity : AppCompatActivity() {
 
-
+class MainActivity : AppCompatActivity() {
     companion object {
         private const val FRAGMENT_DIALOG = "dialog"
     }
@@ -81,12 +78,6 @@ class LiveAnalysisActivity : AppCompatActivity() {
     private lateinit var vClassificationOption: View
     private var cameraSource: CameraSource? = null
     private var isClassifyPose = false
-    private lateinit var timerTextView: TextView
-
-    // variable for selected exercise
-    private var selectedExercise: String? = null
-
-
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -164,7 +155,6 @@ class LiveAnalysisActivity : AppCompatActivity() {
         tvClassificationValue3 = findViewById(R.id.tvClassificationValue3)
         swClassification = findViewById(R.id.swPoseClassification)
         vClassificationOption = findViewById(R.id.vClassificationOption)
-        timerTextView = findViewById(R.id.timerTextView)
 
         // Hinzugefügt
         tvAngle = TextView(this)
@@ -176,7 +166,7 @@ class LiveAnalysisActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        //val mainLayout: LinearLayout = findViewById(R.layout.activity_main) // Ersetze mainLayout durch die ID deines Hauptlayouts
+        //val mainLayout: LinearLayout = findViewById(R.id.activity_main) // Ersetze mainLayout durch die ID deines Hauptlayouts
         //mainLayout.addView(tvAngle)
 
         swClassification.setOnCheckedChangeListener(setClassificationListener)
@@ -186,89 +176,9 @@ class LiveAnalysisActivity : AppCompatActivity() {
 
 
         spnModel.setSelection(modelPos)
-        showStartTimerDialog()
+
+
         initSpinner()
-
-    }
-
-
-    private fun showStartTimerDialog() {
-        AlertDialog.Builder(this).apply {
-
-            // Get selected exercise
-            val selectedExercise = SelectionActivity.selectedImage
-
-            // display the selected exercise
-            if (selectedExercise == R.id.imageView1) {
-                setTitle("L-Sit")
-                setMessage(
-                    "You are going to have 10 seconds to get ready and after that you need to perform the L-Sit for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
-                            "\n- Straight back\n" +
-                            "- Keep rings stable\n" +
-                            "- Angle 90°\n" +
-                            "- Legs horizontal to the floor\n" +
-                            "- Hold for 3 seconds "
-                )
-            } else if (selectedExercise == R.id.imageView2) {
-                setTitle("Squat")
-                setMessage(
-                    "You are going to have 10 seconds to get ready and after that you need to perform the Squat for 30 seconds. Pay attention to the following things to perform the exercise correctly:\n" +
-                            "\n- Keep your back straight\n" +
-                            "- Go down to 90°\n" +
-                            "- Keep your head straight and look forward"
-                )
-            }
-
-
-            setPositiveButton("Start") { dialog, which ->
-                // Startet den Timer, wenn der Nutzer auf "Start" klickt
-
-
-                startCountdownTimer()
-            }
-            setNegativeButton("Back to selection") { dialog, which ->
-                // go back to selection
-                finish()
-
-            }
-            setCancelable(false) // Verhindert das Schließen des Dialogs durch Zurück-Taste oder Tippen außerhalb
-        }.show()
-    }
-
-    private fun startCountdownTimer() {
-        // 10 Sekunden Timer, um sich bereit zu machen
-        object : CountDownTimer(10000, 1000) { // 10 Sekunden, tickt jede Sekunde
-            override fun onTick(millisUntilFinished: Long) {
-                // Aktualisieren des TextViews jede Sekunde
-                val secondsRemaining = millisUntilFinished / 1000
-                timerTextView.text = String.format("Get ready: %02d", secondsRemaining)
-            }
-
-            override fun onFinish() {
-                // Startet den 30-Sekunden-Timer, sobald der 10-Sekunden-Timer abgelaufen ist
-                timerTextView.text = "Start!"
-                startExerciseTimer()
-            }
-        }.start()
-    }
-
-    private fun startExerciseTimer() {
-        object : CountDownTimer(30000, 1000) { // 30 Sekunden, tickt jede Sekunde
-            override fun onTick(millisUntilFinished: Long) {
-                // Aktualisieren des TextViews jede Sekunde
-                val secondsRemaining = millisUntilFinished / 1000
-                timerTextView.text = String.format("Exercise: %02d:%02d", secondsRemaining / 60, secondsRemaining % 60)
-            }
-
-            override fun onFinish() {
-                timerTextView.text = "Done!"
-                Toast.makeText(applicationContext, "Exercise finished!", Toast.LENGTH_SHORT).show()
-                // Weiterleitung zur FinishActivity hier
-                val intent = Intent(this@LiveAnalysisActivity, FinishActivity::class.java)
-                startActivity(intent)
-
-            }
-        }.start()
     }
 
     override fun onStart() {
@@ -424,7 +334,6 @@ class LiveAnalysisActivity : AppCompatActivity() {
                 showTracker(false)
                 MoveNet.create(this, device, ModelType.Lightning)
             }
-
             1 -> {
                 // MoveNet Thunder (SinglePose)
                 showPoseClassifier(true)
@@ -432,7 +341,6 @@ class LiveAnalysisActivity : AppCompatActivity() {
                 showTracker(false)
                 MoveNet.create(this, device, ModelType.Thunder)
             }
-
             2 -> {
                 // MoveNet (Lightning) MultiPose
                 showPoseClassifier(false)
@@ -448,7 +356,6 @@ class LiveAnalysisActivity : AppCompatActivity() {
                     Type.Dynamic
                 )
             }
-
             3 -> {
                 // PoseNet (SinglePose)
                 showPoseClassifier(true)
@@ -456,7 +363,6 @@ class LiveAnalysisActivity : AppCompatActivity() {
                 showTracker(false)
                 PoseNet.create(this, device)
             }
-
             else -> {
                 null
             }
@@ -509,7 +415,6 @@ class LiveAnalysisActivity : AppCompatActivity() {
                 // You can use the API that requires the permission.
                 openCamera()
             }
-
             else -> {
                 // You can directly ask for the permission.
                 // The registered ActivityResultCallback gets the result of this request.
