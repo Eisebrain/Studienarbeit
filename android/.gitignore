@@ -13,3 +13,4 @@
 # IDE-specific files (falls du verschiedene IDEs verwendest, z.B. IntelliJ IDEA, Android Studio)
 /.idea/
 *.iml
+/opencv-4.8.1/
