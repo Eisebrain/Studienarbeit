@@ -3,7 +3,6 @@ package org.tensorflow.lite.examples.poseestimation.tracker
 import android.graphics.Bitmap
 import android.graphics.PointF
 import android.graphics.Rect
-import org.tensorflow.lite.examples.poseestimation.data.BodyPart
 import org.tensorflow.lite.examples.poseestimation.data.Person
 import org.apache.commons.math3.fitting.PolynomialCurveFitter
 import android.util.Log
@@ -11,6 +10,7 @@ import org.apache.commons.math3.fitting.WeightedObservedPoints
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
+import org.tensorflow.lite.examples.poseestimation.data.BodyPart
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -32,8 +32,9 @@ class SpineTracker {
      * @return true if the spine is straight, false if the spine is not straight, null if the spine is not detected
      */
     fun trackSpine(person: Person, bitmap: Bitmap): Boolean? {
-        val hipKeypoint = extractHipKeypoint(person)
-        val shoulderKeypoint = extractShoulderKeypoint(person)
+        val exerciseUtils = org.tensorflow.lite.examples.poseestimation.exercises.ExerciseUtils()
+        val hipKeypoint = exerciseUtils.extractAvgKeypoint(person, BodyPart.LEFT_HIP, BodyPart.RIGHT_HIP)
+        val shoulderKeypoint = exerciseUtils.extractAvgKeypoint(person, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER)
 
         // crop bitmap to the region around the spine
         val spineRegion = Rect(
@@ -127,23 +128,5 @@ class SpineTracker {
 
     private fun cropBitmap(bitmap: Bitmap, rect: Rect): Bitmap {
         return Bitmap.createBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height())
-    }
-
-    private fun extractHipKeypoint(person: Person): PointF {
-        val leftHip = person.keyPoints[BodyPart.LEFT_HIP.position].coordinate
-        val rightHip = person.keyPoints[BodyPart.RIGHT_HIP.position].coordinate
-
-        return PointF((leftHip.x + rightHip.x) / 2, (leftHip.y + rightHip.y) / 2)
-
-    }
-
-    private fun extractShoulderKeypoint(person: Person): PointF {
-        val leftShoulder = person.keyPoints[BodyPart.LEFT_SHOULDER.position].coordinate
-        val rightShoulder = person.keyPoints[BodyPart.RIGHT_SHOULDER.position].coordinate
-
-        return PointF(
-            (leftShoulder.x + rightShoulder.x) / 2,
-            (leftShoulder.y + rightShoulder.y) / 2
-        )
     }
 }
