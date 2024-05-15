@@ -18,6 +18,7 @@ import org.opencv.android.OpenCVLoader
 import org.tensorflow.lite.examples.poseestimation.R
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import java.lang.IllegalStateException
+import org.tensorflow.lite.examples.poseestimation.exercises.LSit
 
 
 class VideoHPE(
@@ -36,6 +37,7 @@ class VideoHPE(
         /** Threshold for confidence score. */
         private const val MIN_CONFIDENCE = .2f
         private const val TAG = "Video"
+        private val LSitValidator = LSit()
     }
 
 
@@ -154,8 +156,9 @@ class VideoHPE(
             when (exerciseType) {
                 R.id.imageView1 -> {
                     // L-Sit
-                    // ToDo: Implement L-Sit exercise -> look at [CameraHPE.kt]
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
+                    val isLSit = LSitValidator.isLSit(persons[0])
+                    println("isLSit: $isLSit\n")
                 }
                 R.id.imageView2 -> {
                     // Squat

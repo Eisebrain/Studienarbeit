@@ -5,8 +5,9 @@ import org.tensorflow.lite.examples.poseestimation.data.Person
 
 class LSit {
     companion object {
-        private const val thresholdMin = 185
-        private const val thresholdMax = 195
+        private const val THRESHOLD_MIN = 173
+        private const val THRESHOLD_PERFECT = 176
+        private const val THRESHOLD_MAX = 182
         val exerciseUtils = ExerciseUtils()
     }
 
@@ -26,13 +27,15 @@ class LSit {
 
         val angleLeftKnee = exerciseUtils.calculateAngleBetweenThreePoints(leftHip, leftKnee, leftAnkle)
         val angleRightKnee = exerciseUtils.calculateAngleBetweenThreePoints(rightHip, rightKnee, rightAnkle)
+        //println("Right knee angle: $angleRightKnee")
         val angleLeftElbow = exerciseUtils.calculateAngleBetweenThreePoints(leftShoulder, leftElbow, leftWrist)
         val angleRightElbow = exerciseUtils.calculateAngleBetweenThreePoints(rightShoulder, rightElbow, rightWrist)
+        //println("Right elbow angle: $angleRightElbow")
 
-        // ToDo: test if left and right joints are in the camera view or if only one joint is in the camera view
-        return thresholdMin < angleLeftKnee && angleLeftKnee < thresholdMax &&
-                thresholdMin < angleRightKnee && angleRightKnee < thresholdMax &&
-                thresholdMin < angleLeftElbow && angleLeftElbow < thresholdMax &&
-                thresholdMin < angleRightElbow && angleRightElbow < thresholdMax
+        // ToDo: return int (eg. 0 for not detected, 1 for detected but not correct, 2 for correct)
+        return (THRESHOLD_MIN < angleLeftKnee && angleLeftKnee < THRESHOLD_MAX &&
+                THRESHOLD_MIN < angleRightKnee && angleRightKnee < THRESHOLD_MAX) ||
+                (THRESHOLD_MIN < angleLeftElbow && angleLeftElbow < THRESHOLD_MAX &&
+                THRESHOLD_MIN < angleRightElbow && angleRightElbow < THRESHOLD_MAX)
     }
 }

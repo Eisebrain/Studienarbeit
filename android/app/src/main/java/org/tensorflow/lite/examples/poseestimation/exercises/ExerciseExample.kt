@@ -5,8 +5,8 @@ import org.tensorflow.lite.examples.poseestimation.data.Person
 
 class ExerciseExample {
     companion object {
-        private const val thresholdMin = 88;
-        private const val thresholdMax = 93;
+        private const val THRESHOLD_MIN = 88;
+        private const val THRESHOLD_MAX = 93;
         val exerciseUtils = ExerciseUtils()
     }
 
@@ -21,6 +21,6 @@ class ExerciseExample {
 
         val angleLeftKnee = exerciseUtils.calculateAngleBetweenThreePoints(leftHip, leftKnee, leftAnkle)
 
-        return thresholdMin < angleLeftKnee && angleLeftKnee < thresholdMax
+        return THRESHOLD_MIN < angleLeftKnee && angleLeftKnee < THRESHOLD_MAX
     }
 }
