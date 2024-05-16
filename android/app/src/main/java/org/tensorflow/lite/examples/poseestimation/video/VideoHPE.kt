@@ -18,7 +18,9 @@ import org.opencv.android.OpenCVLoader
 import org.tensorflow.lite.examples.poseestimation.R
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import java.lang.IllegalStateException
+
 import org.tensorflow.lite.examples.poseestimation.exercises.LSit
+import org.tensorflow.lite.examples.poseestimation.exercises.Squat
 
 
 class VideoHPE(
@@ -38,6 +40,7 @@ class VideoHPE(
         private const val MIN_CONFIDENCE = .2f
         private const val TAG = "Video"
         private val LSitValidator = LSit()
+        private val squatValidator = Squat()
     }
 
 
