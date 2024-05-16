@@ -1,6 +1,7 @@
 <resources>
     <string name="tfe_pe_app_name">TFL Pose Estimation</string>
-    <string name="tfe_pe_request_permission">This app needs camera permission.</string>
+    <string name="tfe_pe_request_permission_camera">This app needs camera permission.</string>
+    <string name="tfe_pe_request_permission_storage">This app needs permission to access your storage.</string>
     <string name="tfe_pe_tv_score">Score: %.2f</string>
     <string name="tfe_pe_tv_model">Model: </string>
     <string name="tfe_pe_tv_fps">Fps: %d</string>
@@ -9,6 +10,36 @@
     <string name="tfe_pe_tv_pose_classification">Pose Classification</string>
     <string name="tfe_pe_tv_tracking">Tracker: </string>
     <string name="tfe_pe_gpu_error">Movenet MultiPose does not support GPU. Fallback to CPU.</string>
+    <string name="video_input">Upload video</string>
+    <string name="video_test">Use test video</string>
+    <string name="camera_input">Use camera</string>
+    <string name="string_test_video">Test Video</string>
+    <string name="string_camera_input">Camera</string>
+    <string name="testvideo">TestVideo</string>
+    <string name="spinecurvature">spineCurvature</string>
+    <string name="app_name">Smart Workout</string>
+    <string name="init_text">\n\nTrain smart not hard! \n\nChoose your exercise and upload a video of you doing it or do it live, to get feedback on your performance</string>
+
+    <string name="l_sit_explanation">"Now you can perform the L-sit. If you want to analyse another exercise, you can go back to the selection in the menu below. Pay attention to the following things to perform the exercise correctly:\n\n"
+                            "- Straight back\n"
+                            "- Keep rings stable\n"
+                            "- Angle 90°\n"
+                            "- Legs horizontal to the floor\n"
+                            "- Hold for 3 seconds "</string>
+    <string name="squat_explanation">"Now you can perform the Squat. If you want to analyse another exercise, you can go back to the selection in the menu below. Pay attention to the following things to perform the exercise correctly:\n\n"
+                            "- Keep your back straight\n"
+                            "- Go down to 90°\n"
+                            "- Keep your head straight and look forward"</string>
+
+    <string name="get_started">Get started</string>
+    <string name="fitness_app">Fitness App</string>
+    <string name="select_workout">Select your exercise and analysis method</string>
+    <string name="l_sit">L-Sit</string>
+    <string name="squat">Squat</string>
+    <string name="live_analysis">Live analysis</string>
+    <string name="video_upload">Video upload</string>
+    <string name="abord">Return to selection</string>
+    <string name="tfe_pe_no_video_selected">No video selected!</string>
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>

@@ -84,41 +84,9 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/vClassificationOption"
+    <Button
+        android:id="@+id/btnAbord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/swPoseClassification"
-            android:text="@string/tfe_pe_tv_pose_classification" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/swPoseClassification"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tvClassificationValue1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/tvClassificationValue2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/tvClassificationValue3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:text="@string/abord" />
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -202,9 +202,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
 
         val angleKneeHipAnkle = calculateAngle(leftKneeHipVector, leftKneeAnkleVector)
         //Log.d("Angle", "Angle between Knee-Hip and Knee-Ankle: $angleKneeHipAnkle degrees")
-        //println("Angle between Knee-Hip and Knee-Ankle: $angleKneeHipAnkle degrees")
-
-
+        // println("Angle between Knee-Hip and Knee-Ankle: $angleKneeHipAnkle degrees")
         return angleKneeHipAnkle
     }
 

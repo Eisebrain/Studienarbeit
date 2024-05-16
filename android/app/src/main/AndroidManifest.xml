@@ -4,6 +4,7 @@
     <!--package="org.tensorflow.lite.examples.poseestimation">-->
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -14,12 +15,24 @@
         android:roundIcon="@drawable/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.PoseEstimation">
-        <activity android:name=".MainActivity"
+        <activity android:name=".CameraActivity"
+            android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity android:name=".VideoActivity" >
+            </activity>
+        <activity android:name=".navigation.StartScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".navigation.SelectionActivity"
+            android:exported="true">
         </activity>
     </application>
 
