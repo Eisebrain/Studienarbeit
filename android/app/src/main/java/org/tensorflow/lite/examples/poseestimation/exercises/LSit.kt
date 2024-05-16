@@ -5,10 +5,10 @@ import org.tensorflow.lite.examples.poseestimation.data.Person
 
 class LSit {
     companion object {
-        private const val THRESHOLD_MIN = 173
+        private const val THRESHOLD_MIN = 172
         private const val THRESHOLD_PERFECT = 176
-        private const val THRESHOLD_MAX = 182
-        private const val THRESHOLD_HIP = 95
+        private const val THRESHOLD_MAX = 183
+        private const val THRESHOLD_HIP = 96
 
         // private const val THRESHOLD_DIFF = 10
         val exerciseUtils = ExerciseUtils()

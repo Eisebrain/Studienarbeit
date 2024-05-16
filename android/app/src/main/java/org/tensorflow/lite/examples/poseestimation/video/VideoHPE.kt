@@ -54,6 +54,11 @@ class VideoHPE(
     private var framesPerSecond = 0
     private var frameRate = 29.99f
 
+    private var currentTimeMs = 0L
+    private var noLSitCounter = 0
+    private var lSitTimer = 0
+    private var lSitSecondCounter = 0
+
     private var retriever: MediaMetadataRetriever? = null
 
     suspend fun initVideo() {
@@ -63,6 +68,8 @@ class VideoHPE(
             println("OpenCV is not loaded")
             return
         }
+        noLSitCounter = 0
+        lSitTimer = 0
 
         GlobalScope.launch(Dispatchers.IO) {
             // get bitmap from video
@@ -76,7 +83,6 @@ class VideoHPE(
                 (1000 / frameRate).toLong() // Intervall zwischen den Frames in Millisekunden
 
             // process bitmap
-            var currentTimeMs = 0L
             while (currentTimeMs < durationMs) {
                 try {
                     val bitmap = retriever!!.getFrameAtTime(
@@ -96,6 +102,7 @@ class VideoHPE(
                     break
                 }
             }
+            println("LSit sec hold: $lSitSecondCounter")
             retriever?.close()
         }
 
@@ -158,7 +165,32 @@ class VideoHPE(
                     // L-Sit
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
                     val isLSit = LSitValidator.isLSit(persons[0])
-                    println("isLSit: $isLSit\n")
+                    // println("isLSit: $isLSit\n")
+                    if (isLSit != 0) {
+                        // initiate timer for 2 seconds, check if max. 10 isLSit == 0 are detected
+                        if (lSitTimer == 0) {
+                            lSitTimer = currentTimeMs.toInt()
+                        } else {
+                            if (currentTimeMs - lSitTimer > 1000) {
+                                println("LSit 1 sec hold")
+                                // reset counter and timer
+                                noLSitCounter = 0
+                                // reset timer
+                                lSitTimer = 0
+                                // increment counter
+                                lSitSecondCounter++
+                            }
+                        }
+                    } else {
+                        // increment counter
+                        noLSitCounter++
+                        if (noLSitCounter > 10) {
+                            // reset counter
+                            noLSitCounter = 0
+                            // reset timer
+                            lSitTimer = 0
+                        }
+                    }
                 }
                 R.id.imageView2 -> {
                     // Squat
