@@ -58,6 +58,8 @@ class VideoHPE(
     private var noLSitCounter = 0
     private var lSitTimer = 0
     private var lSitSecondCounter = 0
+    private var lSitDetectedCounter = 0
+    private var lSitPerfectCounter = 0
 
     private var retriever: MediaMetadataRetriever? = null
 
@@ -103,6 +105,8 @@ class VideoHPE(
                 }
             }
             println("LSit sec hold: $lSitSecondCounter")
+            println("LSit detected: $lSitDetectedCounter")
+            println("LSit perfect: $lSitPerfectCounter")
             retriever?.close()
         }
 
@@ -181,6 +185,7 @@ class VideoHPE(
                                 lSitSecondCounter++
                             }
                         }
+                        incrementCounter(isLSit)
                     } else {
                         // increment counter
                         noLSitCounter++
@@ -212,6 +217,15 @@ class VideoHPE(
             }
         }
         visualize(persons, bitmap)
+    }
+
+    private fun incrementCounter(lSit: Int) {
+        if (lSit == 1) {
+            lSitDetectedCounter++
+        } else if (lSit == 2) {
+            lSitPerfectCounter++
+            lSitDetectedCounter++
+        }
     }
 
     /**
