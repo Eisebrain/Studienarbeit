@@ -104,9 +104,6 @@ class VideoHPE(
                     break
                 }
             }
-            println("LSit sec hold: $lSitSecondCounter")
-            println("LSit detected: $lSitDetectedCounter")
-            println("LSit perfect: $lSitPerfectCounter")
             retriever?.close()
         }
 
@@ -226,6 +223,7 @@ class VideoHPE(
             lSitPerfectCounter++
             lSitDetectedCounter++
         }
+        listener?.onLSitCounter(lSitSecondCounter, lSitDetectedCounter, lSitPerfectCounter)
     }
 
     /**
@@ -311,6 +309,8 @@ class VideoHPE(
         fun onFPSListener(fps: Int)
 
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
+
+        fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
     }
 
 }
