@@ -81,6 +81,9 @@ class VideoActivity : AppCompatActivity() {
     private var lSitDetectedCounter = 0
     private var lSitPerfectCounter = 0
 
+    /** Variables for Squat counter in [videoHPE] */
+    private var squatCounter = 0
+
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -126,6 +129,11 @@ class VideoActivity : AppCompatActivity() {
             intent.putExtra("LSitSecondCounter", lSitSecondCounter.toString())
             intent.putExtra("LSitDetectedCounter", lSitDetectedCounter)
             intent.putExtra("LSitPerfectCounter", lSitPerfectCounter)
+
+            // pass Squat counter to FinishActivity
+            // ToDo: @Mick change this to squatCounter
+            intent.putExtra("SquatCounter", squatCounter)
+
             startActivity(intent)
         }
 
@@ -198,6 +206,11 @@ class VideoActivity : AppCompatActivity() {
                 this@VideoActivity.lSitSecondCounter = lSitSecondCounter
                 this@VideoActivity.lSitDetectedCounter = lSitDetectedCounter
                 this@VideoActivity.lSitPerfectCounter = lSitPerfectCounter
+            }
+
+            override fun onSquatCounter(squatCounter: Int) {
+                // ToDo: @Mick change this to squatCounter
+                this@VideoActivity.squatCounter = squatCounter
             }
         })
         lifecycleScope.launch(Dispatchers.Main) {

@@ -16,8 +16,6 @@ class FinishActivity : AppCompatActivity() {
      */
     private var selectedExercise = SelectionActivity.selectedImage
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_finish)
@@ -66,6 +64,9 @@ class FinishActivity : AppCompatActivity() {
     }
 
     private fun getSquatFeedback(): String {
+        val squatCounter = intent.getIntExtra("SquatCounter",0)
+
+        // ToDo: @Mick add variables
         return "Squat Feedback"
     }
 

@@ -200,6 +200,10 @@ class VideoHPE(
                     // ToDo: Implement Squat exercise -> look at [CameraHPE.kt]
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
 
+                    // ToDo: @Mick change this to squatCounter
+                    // set squat-counter in VideoActivity
+                    listener?.onSquatCounter(0)
+
                     // Squat -> perform spine curvature detection
                     isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
                     if (isSpineStraight != null) {
@@ -312,6 +316,8 @@ class VideoHPE(
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
 
         fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
+
+        fun onSquatCounter(squatCounter: Int)
     }
 
 }
