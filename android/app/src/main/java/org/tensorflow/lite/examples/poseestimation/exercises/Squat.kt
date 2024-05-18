@@ -29,12 +29,17 @@ class Squat {
 
     var currentState = SquatState.Stand
     var squatCount = 0
+    var isKneeAngleCorrectDuringSquat = true
+    var squatTooDeep = false
+    var squatNotDeepEnough = false
+    var squatNotCorrect = false
+    var minSquatDepthReached = false
+
 
     fun isSquatCorrect(person: Person): Boolean {
         val angles = calculateAngles(person)
-        return angles.hipLeft >= KNEE_ANGLE_THRESHOLD_MIN && angles.hipLeft <= KNEE_ANGLE_THRESHOLD_MAX &&
-                angles.hipRight >= KNEE_ANGLE_THRESHOLD_MIN && angles.hipRight <= KNEE_ANGLE_THRESHOLD_MAX
-
+        return angles.kneeLeft >= KNEE_ANGLE_THRESHOLD_MIN && angles.kneeLeft <= KNEE_ANGLE_THRESHOLD_MAX &&
+                angles.kneeRight >= KNEE_ANGLE_THRESHOLD_MIN && angles.kneeRight <= KNEE_ANGLE_THRESHOLD_MAX
     }
 
     private fun calculateAngles(person: Person): Quadruple<Double, Double, Double, Double> {
@@ -59,23 +64,59 @@ class Squat {
     fun updateSquatState(person: Person): Int {
         val currentKneeAngle = calculateAverageKneeAngle(person)
 
-        // Update the state based on knee angle changes
         when (currentState) {
             SquatState.Stand -> {
                 if (currentKneeAngle < previousKneeAngle && currentKneeAngle <= KNEE_ANGLE_THRESHOLD_STAND) {
                     currentState = SquatState.Squat
-                    println("Moving Down")
+                    // Reset conditions when starting a new squat
+                    squatTooDeep = false
+                    squatNotDeepEnough = false
+                    squatNotCorrect = false
+                    isKneeAngleCorrectDuringSquat = currentKneeAngle >= KNEE_ANGLE_THRESHOLD_MIN && currentKneeAngle <= KNEE_ANGLE_THRESHOLD_MAX
                 }
             }
             SquatState.Squat -> {
+                if (currentKneeAngle < KNEE_ANGLE_THRESHOLD_MIN) {
+                    // If squat is too deep, set the flag
+
+                        squatNotDeepEnough = false
+                        squatTooDeep = true
+                        squatNotCorrect = true
+
+
+                }
+                // check if min depth is reached
+                if (currentKneeAngle < KNEE_ANGLE_THRESHOLD_MAX) {
+                    minSquatDepthReached = true
+                }
+                // only set not deep enough if min depth is never reached and its not too deep
+                else if (currentKneeAngle > KNEE_ANGLE_THRESHOLD_MAX && minSquatDepthReached != true) {
+                    if (!squatTooDeep) {
+                        squatNotDeepEnough = true
+                        squatNotCorrect = true
+                    }
+
+                }
+
                 if (currentKneeAngle > previousKneeAngle && currentKneeAngle >= KNEE_ANGLE_THRESHOLD_STAND) {
                     currentState = SquatState.Stand
-                    squatCount++
-                    println("Moving Up")
+                    if (!squatNotCorrect) {
+                        squatCount++
+                        println("Moving Up - Squat korrekt ausgeführt. Aktuelle Squat-Zahl: $squatCount")
+                    } else {
+                        println("Moving Up - Squat nicht korrekt ausgeführt.")
+                        if (squatTooDeep) println("Squat war zu tief.")
+                        if (squatNotDeepEnough) println("Squat war nicht tief genug.")
+                    }
+                    // Reset conditions when squat cycle is complete
+                    isKneeAngleCorrectDuringSquat = true
+                    squatTooDeep = false
+                    squatNotDeepEnough = false
+                    squatNotCorrect = false
                 }
             }
             SquatState.TRANSITION -> {
-                // Additional logic can be placed here if needed
+                // Handle additional logic for transitions if needed
             }
         }
 
@@ -98,5 +139,10 @@ class Squat {
         return (kneeLeft + kneeRight) / 2
     }
 }
+
+
+
+
+
 
 data class Quadruple<A, B, C, D>(val hipLeft: A, val hipRight: B, val kneeLeft: C, val kneeRight: D)
