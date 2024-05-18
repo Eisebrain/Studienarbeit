@@ -64,6 +64,13 @@ class VideoHPE(
     private var lSitDetectedCounter = 0
     private var lSitPerfectCounter = 0
 
+
+    // Squat Counter
+    private var squatCorrectCounter = 0
+    private var squatTooDeepCounter = 0
+    private var squatNotDeepEnoughCounter = 0
+
+
     private var retriever: MediaMetadataRetriever? = null
 
     private var previousSquatCount = 0
@@ -205,18 +212,27 @@ class VideoHPE(
                     // ToDo: Implement Squat exercise -> look at [CameraHPE.kt]
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
 
-                    // ToDo: @Mick change this to squatCounter
-                    // set squat-counter in VideoActivity
-                    listener?.onSquatCounter(0)
 
-                    val isSquatCorrect = SquatValidator.isSquatCorrect(persons[0])
-                    //println(if (isSquatCorrect) "Correct Squat" else "Incorrect Squat")
+
+
 
                     val currentSquatCount = SquatValidator.updateSquatState(persons[0])
-                    if (currentSquatCount != previousSquatCount) {
-                        println("Current squat count: $currentSquatCount")
-                        previousSquatCount = currentSquatCount
+                    // 1 is correct Squat, 2 is too deep, 3 is not deep enough
+                    if (currentSquatCount == 1) {
+                        squatCorrectCounter++
                     }
+                    if (currentSquatCount == 2) {
+                        squatTooDeepCounter++
+                    }
+                    if (currentSquatCount == 3) {
+                        squatNotDeepEnoughCounter++
+                    }
+
+                    // ToDo: @Mick change this to squatCounter
+                    // set squat-counter in VideoActivity
+
+                    listener?.onSquatCounter(squatCorrectCounter, squatTooDeepCounter, squatNotDeepEnoughCounter)
+
 
 
                     // Squat -> perform spine curvature detection
@@ -332,7 +348,7 @@ class VideoHPE(
 
         fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
 
-        fun onSquatCounter(squatCounter: Int)
+        fun onSquatCounter(squatCorrectCounter: Int, squatTooDeepCounter: Int, squatNotDeepEnoughCounter: Int)
     }
 
 }

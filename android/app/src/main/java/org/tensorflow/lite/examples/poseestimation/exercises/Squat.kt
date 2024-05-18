@@ -78,14 +78,13 @@ class Squat {
             SquatState.Squat -> {
                 if (currentKneeAngle < KNEE_ANGLE_THRESHOLD_MIN) {
                     // If squat is too deep, set the flag
-
+                    // Overwrite the flag for  "squat not deep enough"
                         squatNotDeepEnough = false
                         squatTooDeep = true
                         squatNotCorrect = true
 
-
                 }
-                // check if min depth is reached
+                // check if min depth is reached and set flag so
                 if (currentKneeAngle < KNEE_ANGLE_THRESHOLD_MAX) {
                     minSquatDepthReached = true
                 }
@@ -95,18 +94,23 @@ class Squat {
                         squatNotDeepEnough = true
                         squatNotCorrect = true
                     }
-
                 }
 
                 if (currentKneeAngle > previousKneeAngle && currentKneeAngle >= KNEE_ANGLE_THRESHOLD_STAND) {
                     currentState = SquatState.Stand
                     if (!squatNotCorrect) {
-                        squatCount++
+                        return 1
                         println("Moving Up - Squat korrekt ausgeführt. Aktuelle Squat-Zahl: $squatCount")
                     } else {
                         println("Moving Up - Squat nicht korrekt ausgeführt.")
-                        if (squatTooDeep) println("Squat war zu tief.")
-                        if (squatNotDeepEnough) println("Squat war nicht tief genug.")
+                        if (squatTooDeep) {
+                            println("Squat war zu tief.")
+                            return 2
+                        }
+                        if (squatNotDeepEnough) {
+                            return 3
+                            println("Squat war nicht tief genug.")
+                        }
                     }
                     // Reset conditions when squat cycle is complete
                     isKneeAngleCorrectDuringSquat = true
