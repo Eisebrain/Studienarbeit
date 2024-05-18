@@ -31,12 +31,12 @@ class VideoHPE(
     private val listener: VideoHPEListener? = null
 ) {
     companion object {
-        private const val PREVIEW_WIDTH = 540
-        private const val PREVIEW_HEIGHT = 1080
+        //private const val PREVIEW_WIDTH = 540
+        //private const val PREVIEW_HEIGHT = 1080
 
         /** Threshold for confidence score. */
         private const val MIN_CONFIDENCE = .2f
-        private const val TAG = "Video"
+        //private const val TAG = "Video"
         private val LSitValidator = LSit()
     }
 
@@ -49,7 +49,7 @@ class VideoHPE(
     private var isSpineStraight: Boolean? = null
 
     /** Frame count that have been processed so far in an one second interval to calculate FPS. */
-    private var fpsTimer: Timer? = null
+    // private var fpsTimer: Timer? = null
     private var frameProcessedInOneSecondInterval = 0
     private var framesPerSecond = 0
     private var frameRate = 29.99f
@@ -186,6 +186,7 @@ class VideoHPE(
                     } else {
                         // increment counter
                         noLSitCounter++
+                        // if no LSit is detected for 10 frames, reset counter and timer
                         if (noLSitCounter > 10) {
                             // reset counter
                             noLSitCounter = 0

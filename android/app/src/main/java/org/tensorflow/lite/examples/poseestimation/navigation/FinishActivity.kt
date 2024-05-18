@@ -50,8 +50,15 @@ class FinishActivity : AppCompatActivity() {
         val lSitDetectedCounter = intent.getIntExtra("LSitDetectedCounter",0)
         val lSitPerfectCounter = intent.getIntExtra("LSitPerfectCounter",0)
 
-        val execution = ((lSitPerfectCounter.toFloat() / lSitDetectedCounter.toFloat()) * 100)
-        val executionString = String.format("%.2f", execution)
+        var execution = 0.0f
+        var executionString = ""
+
+        if (lSitDetectedCounter == 0) {
+            executionString = "0"
+        } else {
+            execution = ((lSitPerfectCounter.toFloat() / lSitDetectedCounter.toFloat()) * 100)
+            executionString = String.format("%.2f", execution)
+        }
 
         val feedback = if (execution > 75) "You did a great job!" else "Keep practicing!"
 

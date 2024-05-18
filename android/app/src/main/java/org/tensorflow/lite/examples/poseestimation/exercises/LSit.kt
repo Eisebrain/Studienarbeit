@@ -57,6 +57,7 @@ class LSit {
                 THRESHOLD_PERFECT < angleRightElbow && angleRightElbow < THRESHOLD_MAX)
             ) {
                 // perfect LSit
+                println("Perfect LSit detected!")
                 return 2
             } else if ((THRESHOLD_MIN < angleLeftKnee && angleLeftKnee < THRESHOLD_MAX &&
                 THRESHOLD_MIN < angleLeftElbow && angleLeftElbow < THRESHOLD_MAX) ||
@@ -64,6 +65,7 @@ class LSit {
                 THRESHOLD_MIN < angleRightElbow && angleRightElbow < THRESHOLD_MAX)
             ) {
                 // not perfect LSit, but still LSit
+                println("LSit detected!")
                 return 1
             }
         }
