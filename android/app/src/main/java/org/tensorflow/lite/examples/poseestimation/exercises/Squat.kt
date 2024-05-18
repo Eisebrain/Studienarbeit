@@ -61,6 +61,11 @@ class Squat {
         return Quadruple(hipLeft, hipRight, kneeLeft, kneeRight)
     }
 
+
+
+
+
+
     fun updateSquatState(person: Person): Int {
         val currentKneeAngle = calculateAverageKneeAngle(person)
 
@@ -99,8 +104,8 @@ class Squat {
                 if (currentKneeAngle > previousKneeAngle && currentKneeAngle >= KNEE_ANGLE_THRESHOLD_STAND) {
                     currentState = SquatState.Stand
                     if (!squatNotCorrect) {
-                        return 1
                         println("Moving Up - Squat korrekt ausgeführt. Aktuelle Squat-Zahl: $squatCount")
+                        return 1
                     } else {
                         println("Moving Up - Squat nicht korrekt ausgeführt.")
                         if (squatTooDeep) {
@@ -108,8 +113,8 @@ class Squat {
                             return 2
                         }
                         if (squatNotDeepEnough) {
-                            return 3
                             println("Squat war nicht tief genug.")
+                            return 3
                         }
                     }
                     // Reset conditions when squat cycle is complete

@@ -70,6 +70,10 @@ class VideoHPE(
     private var squatTooDeepCounter = 0
     private var squatNotDeepEnoughCounter = 0
 
+    private var totalSquatFrames = 0
+    private var spineStraightCount = 0
+    private var spineStraightPercentage = 0.0
+
 
     private var retriever: MediaMetadataRetriever? = null
 
@@ -231,21 +235,29 @@ class VideoHPE(
                     // ToDo: @Mick change this to squatCounter
                     // set squat-counter in VideoActivity
 
-                    listener?.onSquatCounter(squatCorrectCounter, squatTooDeepCounter, squatNotDeepEnoughCounter)
 
 
 
-                    // Squat -> perform spine curvature detection
-                    isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
-                    if (isSpineStraight != null) {
-                        val text = if (isSpineStraight!!) {
-                            // Todo: Do not log the result, but display it on the screen or give feedback to the user
-                           // "Spine is straight"
-                        } else {
-                            //"Spine is not straight"
+
+                    if (SquatValidator.currentState == Squat.SquatState.Squat) {
+                        isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
+                        if (isSpineStraight == true) {
+                            spineStraightCount++
                         }
-                        //println(text)
+                        totalSquatFrames++
                     }
+
+                    // Wenn der Squat endet, berechne den Prozentsatz der korrekten Wirbelsäulenhaltung
+                    if (SquatValidator.currentState == Squat.SquatState.Stand && totalSquatFrames > 0) {
+                        val spineStraightPercentage = (spineStraightCount.toDouble() / totalSquatFrames) * 100
+                        println("Percentage of time spine was straight during squat: $spineStraightPercentage%")
+                        // Reset der Counter für den nächsten Squat
+                        spineStraightCount = 0
+                        totalSquatFrames = 0
+                    }
+
+
+                    listener?.onSquatCounter(squatCorrectCounter, squatTooDeepCounter, squatNotDeepEnoughCounter, spineStraightPercentage)
                 }
             }
         }
@@ -348,7 +360,7 @@ class VideoHPE(
 
         fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
 
-        fun onSquatCounter(squatCorrectCounter: Int, squatTooDeepCounter: Int, squatNotDeepEnoughCounter: Int)
+        fun onSquatCounter(squatCorrectCounter: Int, squatTooDeepCounter: Int, squatNotDeepEnoughCounter: Int, spineStraightPercentage: Double)
     }
 
 }
