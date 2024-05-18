@@ -40,7 +40,7 @@ class VideoHPE(
         private const val MIN_CONFIDENCE = .2f
         //private const val TAG = "Video"
         private val LSitValidator = LSit()
-        private val squatValidator = Squat()
+        private val SquatValidator = Squat()
     }
 
 
@@ -207,16 +207,22 @@ class VideoHPE(
                     // set squat-counter in VideoActivity
                     listener?.onSquatCounter(0)
 
+                    val isSquatCorrect = SquatValidator.isSquatCorrect(persons[0])
+                    //println(if (isSquatCorrect) "Correct Squat" else "Incorrect Squat")
+
+                    val currentSquatCount = SquatValidator.updateSquatState(persons[0])
+                    println("Current squat count: $currentSquatCount")
+
                     // Squat -> perform spine curvature detection
                     isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
                     if (isSpineStraight != null) {
                         val text = if (isSpineStraight!!) {
                             // Todo: Do not log the result, but display it on the screen or give feedback to the user
-                            "Spine is straight"
+                           // "Spine is straight"
                         } else {
-                            "Spine is not straight"
+                            //"Spine is not straight"
                         }
-                        println(text)
+                        //println(text)
                     }
                 }
             }
