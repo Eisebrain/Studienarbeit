@@ -64,10 +64,13 @@ class FinishActivity : AppCompatActivity() {
     }
 
     private fun getSquatFeedback(): String {
-        val squatCounter = intent.getIntExtra("SquatCounter",0)
+        val squatCorrectCounter = intent.getIntExtra("squatCorrectCounter",0)
+        val squatTooDeepCounter = intent.getIntExtra("squatTooDeepCounter",0)
+        val squatNotDeepEnoughCounter = intent.getIntExtra("squatNotDeepEnoughCounter",0)
+        val spineStraightPercentage = intent.getDoubleExtra("spineStraightPercentage",0.0)
 
-        // ToDo: @Mick add variables
-        return "Squat Feedback"
+
+        return "Squat-Exercise: \n\nCorrect Squats: $squatCorrectCounter \nSquats too deep: $squatTooDeepCounter \nSquats not deep enough: $squatNotDeepEnoughCounter \nSpine straight: $spineStraightPercentage%"
     }
 
 
