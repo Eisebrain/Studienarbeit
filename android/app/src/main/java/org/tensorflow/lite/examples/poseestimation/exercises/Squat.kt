@@ -4,20 +4,30 @@ import org.tensorflow.lite.examples.poseestimation.data.BodyPart
 import org.tensorflow.lite.examples.poseestimation.data.Person
 
 class Squat {
+
+    /**
+     * This class is to check if the squat exercise is done correctly.
+     * In addition, it also counts the number of squats done.
+     *
+     * Following criteria are checked to determine if the squat is done correctly:
+     * 1. The knee angle should be between 60 and 85 degrees.
+     * 2.
+     */
     companion object {
         private const val KNEE_ANGLE_THRESHOLD_MIN = 60
         private const val KNEE_ANGLE_THRESHOLD_MAX = 85
+        private const val KNEE_ANGLE_THRESHOLD_STAND = 110
 
         private var previousKneeAngle = Double.MAX_VALUE
     }
 
     enum class SquatState {
-        UP,        // Starting and ending state of a squat (standing)
-        DOWN,      // Lowest state of a squat
+        Stand,        // Starting and ending state of a squat (standing)
+        Squat,      // Lowest state of a squat
         TRANSITION // Intermediate state, can be descending or ascending
     }
 
-    var currentState = SquatState.UP
+    var currentState = SquatState.Stand
     var squatCount = 0
 
     fun isSquatCorrect(person: Person): Boolean {
@@ -51,17 +61,15 @@ class Squat {
 
         // Update the state based on knee angle changes
         when (currentState) {
-            SquatState.UP -> {
-                // Moving down if the knee angle is decreasing and is less than the maximum threshold
-                if (currentKneeAngle < previousKneeAngle && currentKneeAngle <= KNEE_ANGLE_THRESHOLD_MAX) {
-                    currentState = SquatState.DOWN
+            SquatState.Stand -> {
+                if (currentKneeAngle < previousKneeAngle && currentKneeAngle <= KNEE_ANGLE_THRESHOLD_STAND) {
+                    currentState = SquatState.Squat
                     println("Moving Down")
                 }
             }
-            SquatState.DOWN -> {
-                // Moving up if the knee angle is increasing and surpasses the minimum threshold
-                if (currentKneeAngle > previousKneeAngle && currentKneeAngle >= KNEE_ANGLE_THRESHOLD_MIN) {
-                    currentState = SquatState.UP
+            SquatState.Squat -> {
+                if (currentKneeAngle > previousKneeAngle && currentKneeAngle >= KNEE_ANGLE_THRESHOLD_STAND) {
+                    currentState = SquatState.Stand
                     squatCount++
                     println("Moving Up")
                 }

@@ -64,6 +64,8 @@ class VideoHPE(
 
     private var retriever: MediaMetadataRetriever? = null
 
+    private var previousSquatCount = 0
+
     suspend fun initVideo() {
         if (OpenCVLoader.initDebug()) {
             println("OpenCV is loaded")
@@ -200,11 +202,12 @@ class VideoHPE(
                     // ToDo: Implement Squat exercise -> look at [CameraHPE.kt]
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
 
-                    val isSquatCorrect = SquatValidator.isSquatCorrect(persons[0])
-                    //println(if (isSquatCorrect) "Correct Squat" else "Incorrect Squat")
-
                     val currentSquatCount = SquatValidator.updateSquatState(persons[0])
-                    println("Current squat count: $currentSquatCount")
+                    if (currentSquatCount != previousSquatCount) {
+                        println("Current squat count: $currentSquatCount")
+                        previousSquatCount = currentSquatCount
+                    }
+
 
                     // Squat -> perform spine curvature detection
                     isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
