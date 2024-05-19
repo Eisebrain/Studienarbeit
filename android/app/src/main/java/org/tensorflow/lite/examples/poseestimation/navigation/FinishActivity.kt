@@ -71,7 +71,7 @@ class FinishActivity : AppCompatActivity() {
 
         val spineStraightPercentageString = String.format("%.2f", spineStraightPercentage)
 
-        return "Squat-Exercise: \n\nCorrect Squats: $squatCorrectCounter \nSquats too deep: $squatTooDeepCounter \nSquats not deep enough: $squatNotDeepEnoughCounter \nSpine straight: $spineStraightPercentageString%"
+        return "Squat-Exercise: \n\nCorrect Squats: $squatCorrectCounter \nSquats too deep: $squatTooDeepCounter \nSquats not deep enough: $squatNotDeepEnoughCounter \nAverage spine straightness: $spineStraightPercentageString%"
     }
 
 

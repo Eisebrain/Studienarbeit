@@ -74,6 +74,10 @@ class VideoHPE(
     private var totalSquatFrames = 0
     private var spineStraightCount = 0
     private var spineStraightPercentage = 0.0
+    private var totalSpineStraightPercentage = 0.0
+    private var countSpineStraightMeasurements = 0
+    private var averageSpineStraightPercentage = 0.0
+
 
 
     private var retriever: MediaMetadataRetriever? = null
@@ -247,6 +251,13 @@ class VideoHPE(
                         spineStraightPercentage =
                             (spineStraightCount.toDouble() / totalSquatFrames) * 100
                         println("Percentage of time spine was straight during squat: $spineStraightPercentage%")
+
+                        totalSpineStraightPercentage += spineStraightPercentage
+                        countSpineStraightMeasurements++
+
+                        averageSpineStraightPercentage = totalSpineStraightPercentage / countSpineStraightMeasurements
+                        println("Average percentage of time spine was straight across all squats: $averageSpineStraightPercentage%")
+
                         // Reset der Counter für den nächsten Squat
                         spineStraightCount = 0
                         totalSquatFrames = 0
@@ -256,7 +267,7 @@ class VideoHPE(
                         squatCorrectCounter,
                         squatTooDeepCounter,
                         squatNotDeepEnoughCounter,
-                        spineStraightPercentage
+                        averageSpineStraightPercentage
                     )
                 }
             }
@@ -364,7 +375,7 @@ class VideoHPE(
             squatCorrectCounter: Int,
             squatTooDeepCounter: Int,
             squatNotDeepEnoughCounter: Int,
-            spineStraightPercentage: Double
+            averageSpineStraightPercentage: Double
         )
     }
 
