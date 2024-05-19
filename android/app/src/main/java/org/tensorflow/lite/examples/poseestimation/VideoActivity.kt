@@ -85,7 +85,7 @@ class VideoActivity : AppCompatActivity() {
     private var squatCorrectCounter = 0
     private var squatTooDeepCounter = 0
     private var squatNotDeepEnoughCounter = 0
-    private var spineStraightPercentage = 0.0
+    private var spineStraightPercentage: Double = 0.0
 
 
     private val requestPermissionLauncher =
@@ -136,9 +136,10 @@ class VideoActivity : AppCompatActivity() {
             // pass Squat counter to FinishActivity
             intent.putExtra("SquatCorrectCounter", squatCorrectCounter)
             intent.putExtra("SquatTooDeepCounter", squatTooDeepCounter)
-            intent.putExtra("squatNotDeepEnoughCounter", squatNotDeepEnoughCounter)
+            intent.putExtra("SquatNotDeepEnoughCounter", squatNotDeepEnoughCounter)
             // pass spineStraightPercentage to FinishActivity
-            intent.putExtra("spineStraightPercentage", spineStraightPercentage)
+            println("SpineStraightPercentage1: $spineStraightPercentage")
+            intent.putExtra("SpineStraightPercentage", spineStraightPercentage)
 
             startActivity(intent)
         }

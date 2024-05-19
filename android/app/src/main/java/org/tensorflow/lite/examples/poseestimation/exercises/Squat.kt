@@ -54,16 +54,15 @@ class Squat {
         val rightShoulder = exerciseUtils.extractKeypoint(person, BodyPart.RIGHT_SHOULDER)
 
         val kneeLeft = exerciseUtils.calculateAngleBetweenThreePoints(leftAnkle, leftKnee, leftHip)
-        val kneeRight = exerciseUtils.calculateAngleBetweenThreePoints(rightAnkle, rightKnee, rightHip)
-        val hipLeft = exerciseUtils.calculateAngleBetweenThreePoints(leftShoulder, leftHip, leftKnee)
-        val hipRight = exerciseUtils.calculateAngleBetweenThreePoints(rightShoulder, rightHip, rightKnee)
+        val kneeRight =
+            exerciseUtils.calculateAngleBetweenThreePoints(rightAnkle, rightKnee, rightHip)
+        val hipLeft =
+            exerciseUtils.calculateAngleBetweenThreePoints(leftShoulder, leftHip, leftKnee)
+        val hipRight =
+            exerciseUtils.calculateAngleBetweenThreePoints(rightShoulder, rightHip, rightKnee)
 
         return Quadruple(hipLeft, hipRight, kneeLeft, kneeRight)
     }
-
-
-
-
 
 
     fun updateSquatState(person: Person): Int {
@@ -77,16 +76,18 @@ class Squat {
                     squatTooDeep = false
                     squatNotDeepEnough = false
                     squatNotCorrect = false
-                    isKneeAngleCorrectDuringSquat = currentKneeAngle >= KNEE_ANGLE_THRESHOLD_MIN && currentKneeAngle <= KNEE_ANGLE_THRESHOLD_MAX
+                    isKneeAngleCorrectDuringSquat =
+                        currentKneeAngle >= KNEE_ANGLE_THRESHOLD_MIN && currentKneeAngle <= KNEE_ANGLE_THRESHOLD_MAX
                 }
             }
+
             SquatState.Squat -> {
                 if (currentKneeAngle < KNEE_ANGLE_THRESHOLD_MIN) {
                     // If squat is too deep, set the flag
                     // Overwrite the flag for  "squat not deep enough"
-                        squatNotDeepEnough = false
-                        squatTooDeep = true
-                        squatNotCorrect = true
+                    squatNotDeepEnough = false
+                    squatTooDeep = true
+                    squatNotCorrect = true
 
                 }
                 // check if min depth is reached and set flag so
@@ -124,6 +125,7 @@ class Squat {
                     squatNotCorrect = false
                 }
             }
+
             SquatState.TRANSITION -> {
                 // Handle additional logic for transitions if needed
             }
@@ -148,10 +150,6 @@ class Squat {
         return (kneeLeft + kneeRight) / 2
     }
 }
-
-
-
-
 
 
 data class Quadruple<A, B, C, D>(val hipLeft: A, val hipRight: B, val kneeLeft: C, val kneeRight: D)

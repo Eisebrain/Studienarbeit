@@ -38,6 +38,7 @@ class VideoHPE(
 
         /** Threshold for confidence score. */
         private const val MIN_CONFIDENCE = .2f
+
         //private const val TAG = "Video"
         private val LSitValidator = LSit()
         private val SquatValidator = Squat()
@@ -113,9 +114,8 @@ class VideoHPE(
                     // Inkrementiere die aktuelle Zeit um das Intervall zwischen den Frames
                     currentTimeMs += frameIntervalMs
 
-                    listener?.onFPSListener((frameIntervalMs/10).toInt())
-                }
-                catch(e: IllegalStateException) {
+                    listener?.onFPSListener((frameIntervalMs / 10).toInt())
+                } catch (e: IllegalStateException) {
                     println("Error: ${e.message}")
                     break
                 }
@@ -211,13 +211,11 @@ class VideoHPE(
                         }
                     }
                 }
+
                 R.id.imageView2 -> {
                     // Squat
                     // ToDo: Implement Squat exercise -> look at [CameraHPE.kt]
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
-
-
-
 
 
                     val currentSquatCount = SquatValidator.updateSquatState(persons[0])
@@ -236,9 +234,6 @@ class VideoHPE(
                     // set squat-counter in VideoActivity
 
 
-
-
-
                     if (SquatValidator.currentState == Squat.SquatState.Squat) {
                         isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
                         if (isSpineStraight == true) {
@@ -249,15 +244,20 @@ class VideoHPE(
 
                     // Wenn der Squat endet, berechne den Prozentsatz der korrekten Wirbelsäulenhaltung
                     if (SquatValidator.currentState == Squat.SquatState.Stand && totalSquatFrames > 0) {
-                        val spineStraightPercentage = (spineStraightCount.toDouble() / totalSquatFrames) * 100
+                        spineStraightPercentage =
+                            (spineStraightCount.toDouble() / totalSquatFrames) * 100
                         println("Percentage of time spine was straight during squat: $spineStraightPercentage%")
                         // Reset der Counter für den nächsten Squat
                         spineStraightCount = 0
                         totalSquatFrames = 0
                     }
 
-
-                    listener?.onSquatCounter(squatCorrectCounter, squatTooDeepCounter, squatNotDeepEnoughCounter, spineStraightPercentage)
+                    listener?.onSquatCounter(
+                        squatCorrectCounter,
+                        squatTooDeepCounter,
+                        squatNotDeepEnoughCounter,
+                        spineStraightPercentage
+                    )
                 }
             }
         }
@@ -360,7 +360,12 @@ class VideoHPE(
 
         fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
 
-        fun onSquatCounter(squatCorrectCounter: Int, squatTooDeepCounter: Int, squatNotDeepEnoughCounter: Int, spineStraightPercentage: Double)
+        fun onSquatCounter(
+            squatCorrectCounter: Int,
+            squatTooDeepCounter: Int,
+            squatNotDeepEnoughCounter: Int,
+            spineStraightPercentage: Double
+        )
     }
 
 }
