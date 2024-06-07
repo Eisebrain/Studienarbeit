@@ -18,6 +18,7 @@ import org.opencv.android.OpenCVLoader
 import org.tensorflow.lite.examples.poseestimation.R
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import java.lang.IllegalStateException
+import org.tensorflow.lite.examples.poseestimation.exercises.LSit
 
 
 class VideoHPE(
@@ -30,12 +31,13 @@ class VideoHPE(
     private val listener: VideoHPEListener? = null
 ) {
     companion object {
-        private const val PREVIEW_WIDTH = 540
-        private const val PREVIEW_HEIGHT = 1080
+        //private const val PREVIEW_WIDTH = 540
+        //private const val PREVIEW_HEIGHT = 1080
 
         /** Threshold for confidence score. */
         private const val MIN_CONFIDENCE = .2f
-        private const val TAG = "Video"
+        //private const val TAG = "Video"
+        private val LSitValidator = LSit()
     }
 
 
@@ -47,10 +49,17 @@ class VideoHPE(
     private var isSpineStraight: Boolean? = null
 
     /** Frame count that have been processed so far in an one second interval to calculate FPS. */
-    private var fpsTimer: Timer? = null
+    // private var fpsTimer: Timer? = null
     private var frameProcessedInOneSecondInterval = 0
     private var framesPerSecond = 0
     private var frameRate = 29.99f
+
+    private var currentTimeMs = 0L
+    private var noLSitCounter = 0
+    private var lSitTimer = 0
+    private var lSitSecondCounter = 0
+    private var lSitDetectedCounter = 0
+    private var lSitPerfectCounter = 0
 
     private var retriever: MediaMetadataRetriever? = null
 
@@ -61,6 +70,8 @@ class VideoHPE(
             println("OpenCV is not loaded")
             return
         }
+        noLSitCounter = 0
+        lSitTimer = 0
 
         GlobalScope.launch(Dispatchers.IO) {
             // get bitmap from video
@@ -74,7 +85,6 @@ class VideoHPE(
                 (1000 / frameRate).toLong() // Intervall zwischen den Frames in Millisekunden
 
             // process bitmap
-            var currentTimeMs = 0L
             while (currentTimeMs < durationMs) {
                 try {
                     val bitmap = retriever!!.getFrameAtTime(
@@ -154,13 +164,45 @@ class VideoHPE(
             when (exerciseType) {
                 R.id.imageView1 -> {
                     // L-Sit
-                    // ToDo: Implement L-Sit exercise -> look at [CameraHPE.kt]
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
+                    val isLSit = LSitValidator.isLSit(persons[0])
+                    // println("isLSit: $isLSit\n")
+                    if (isLSit != 0) {
+                        // initiate timer for 2 seconds, check if max. 10 isLSit == 0 are detected
+                        if (lSitTimer == 0) {
+                            lSitTimer = currentTimeMs.toInt()
+                        } else {
+                            if (currentTimeMs - lSitTimer > 1000) {
+                                println("LSit 1 sec hold")
+                                // reset counter and timer
+                                noLSitCounter = 0
+                                // reset timer
+                                lSitTimer = 0
+                                // increment counter
+                                lSitSecondCounter++
+                            }
+                        }
+                        incrementCounter(isLSit)
+                    } else {
+                        // increment counter
+                        noLSitCounter++
+                        // if no LSit is detected for 10 frames, reset counter and timer
+                        if (noLSitCounter > 10) {
+                            // reset counter
+                            noLSitCounter = 0
+                            // reset timer
+                            lSitTimer = 0
+                        }
+                    }
                 }
                 R.id.imageView2 -> {
                     // Squat
                     // ToDo: Implement Squat exercise -> look at [CameraHPE.kt]
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
+
+                    // ToDo: @Mick change this to squatCounter
+                    // set squat-counter in VideoActivity
+                    listener?.onSquatCounter(0)
 
                     // Squat -> perform spine curvature detection
                     isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
@@ -177,6 +219,16 @@ class VideoHPE(
             }
         }
         visualize(persons, bitmap)
+    }
+
+    private fun incrementCounter(lSit: Int) {
+        if (lSit == 1) {
+            lSitDetectedCounter++
+        } else if (lSit == 2) {
+            lSitPerfectCounter++
+            lSitDetectedCounter++
+        }
+        listener?.onLSitCounter(lSitSecondCounter, lSitDetectedCounter, lSitPerfectCounter)
     }
 
     /**
@@ -262,6 +314,10 @@ class VideoHPE(
         fun onFPSListener(fps: Int)
 
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
+
+        fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
+
+        fun onSquatCounter(squatCounter: Int)
     }
 
 }

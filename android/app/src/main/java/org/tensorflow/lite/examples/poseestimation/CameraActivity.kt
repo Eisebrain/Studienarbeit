@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import org.tensorflow.lite.examples.poseestimation.camera.CameraHPE
 import org.tensorflow.lite.examples.poseestimation.data.Device
 import org.tensorflow.lite.examples.poseestimation.ml.*
+import org.tensorflow.lite.examples.poseestimation.navigation.FinishActivity
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import kotlin.properties.Delegates
 
@@ -70,10 +71,18 @@ class CameraActivity : AppCompatActivity() {
     /** Button to abort the exercise and return to [SelectionActivity]*/
     private lateinit var btnAbord: Button
 
+    /** Button to finish the exercise and go to [FinishActivity]*/
+    private lateinit var btnFinish: Button
+
     /** Selected exercise from [SelectionActivity]
      * selectedExercise == R.id.imageView1 -> L-Sit
      * selectedExercise == R.id.imageView2 -> Squat */
     private var selectedExercise by Delegates.notNull<Int>()
+
+    /** Variables for LSit counter in [videoHPE] */
+    private var lSitSecondCounter = 0
+    private var lSitDetectedCounter = 0
+    private var lSitPerfectCounter = 0
 
     private var cameraHPE: CameraHPE? = null
     private var isClassifyPose = false
@@ -145,6 +154,7 @@ class CameraActivity : AppCompatActivity() {
         surfaceView = findViewById(R.id.surfaceView)
 
         btnAbord = findViewById(R.id.btnAbord)
+        btnFinish = findViewById(R.id.btnFinish)
 
         selectedExercise = SelectionActivity.selectedImage
 
@@ -158,6 +168,16 @@ class CameraActivity : AppCompatActivity() {
             onPause()
             val i = Intent(this@CameraActivity, SelectionActivity::class.java)
             startActivity(i)
+        }
+
+        btnFinish.setOnClickListener {
+            onPause()
+            val intent = Intent(this@CameraActivity, FinishActivity::class.java)
+            // pass LSit counter to FinishActivity
+            intent.putExtra("LSitSecondCounter", lSitSecondCounter.toString())
+            intent.putExtra("LSitDetectedCounter", lSitDetectedCounter)
+            intent.putExtra("LSitPerfectCounter", lSitPerfectCounter)
+            startActivity(intent)
         }
 
         spnModel.setSelection(modelPos)
@@ -234,6 +254,16 @@ class CameraActivity : AppCompatActivity() {
                             poseLabels: List<Pair<String, Float>>?
                         ) {
                             tvScore.text = getString(R.string.tfe_pe_tv_score, personScore ?: 0f)
+                        }
+
+                        override fun onLSitCounter(
+                            lSitSecondCounter: Int,
+                            lSitDetectedCounter: Int,
+                            lSitPerfectCounter: Int
+                        ) {
+                            this@CameraActivity.lSitSecondCounter = lSitSecondCounter
+                            this@CameraActivity.lSitDetectedCounter = lSitDetectedCounter
+                            this@CameraActivity.lSitPerfectCounter = lSitPerfectCounter
                         }
 
                     }).apply {

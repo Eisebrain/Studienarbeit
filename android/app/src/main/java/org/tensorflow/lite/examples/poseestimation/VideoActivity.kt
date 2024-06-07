@@ -29,6 +29,7 @@ import org.tensorflow.lite.examples.poseestimation.ml.MoveNetMultiPose
 import org.tensorflow.lite.examples.poseestimation.ml.PoseNet
 import org.tensorflow.lite.examples.poseestimation.ml.Type
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
+import org.tensorflow.lite.examples.poseestimation.navigation.FinishActivity
 import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
 import kotlin.properties.Delegates
@@ -63,6 +64,9 @@ class VideoActivity : AppCompatActivity() {
     /** Button to abort the exercise and return to [SelectionActivity]*/
     private lateinit var btnAbord: Button
 
+    /** Button to finish the exercise and go to [FinishActivity]*/
+    private lateinit var btnFinish: Button
+
     /** Selected exercise from [SelectionActivity]
      * selectedExercise == R.id.imageView1 -> L-Sit
      * selectedExercise == R.id.imageView2 -> Squat */
@@ -71,6 +75,14 @@ class VideoActivity : AppCompatActivity() {
     private var videoHPE: VideoHPE? = null
 
     private lateinit var videoUri: Uri
+
+    /** Variables for LSit counter in [videoHPE] */
+    private var lSitSecondCounter = 0
+    private var lSitDetectedCounter = 0
+    private var lSitPerfectCounter = 0
+
+    /** Variables for Squat counter in [videoHPE] */
+    private var squatCounter = 0
 
 
     private val requestPermissionLauncher =
@@ -100,15 +112,29 @@ class VideoActivity : AppCompatActivity() {
         surfaceView = findViewById(R.id.surfaceViewVideo)
 
         btnAbord = findViewById(R.id.btnAbord)
+        btnFinish = findViewById(R.id.btnFinish)
 
         selectedExercise = SelectionActivity.selectedImage
-
-
 
         btnAbord.setOnClickListener {
             onPause()
             val i = Intent(this@VideoActivity, SelectionActivity::class.java)
             startActivity(i)
+        }
+
+        btnFinish.setOnClickListener {
+            onPause()
+            val intent = Intent(this@VideoActivity, FinishActivity::class.java)
+            // pass LSit counter to FinishActivity
+            intent.putExtra("LSitSecondCounter", lSitSecondCounter.toString())
+            intent.putExtra("LSitDetectedCounter", lSitDetectedCounter)
+            intent.putExtra("LSitPerfectCounter", lSitPerfectCounter)
+
+            // pass Squat counter to FinishActivity
+            // ToDo: @Mick change this to squatCounter
+            intent.putExtra("SquatCounter", squatCounter)
+
+            startActivity(intent)
         }
 
         if (!isExternalStoragePermissionGranted()) {
@@ -172,6 +198,20 @@ class VideoActivity : AppCompatActivity() {
                 tvScore.text = getString(R.string.tfe_pe_tv_score, personScore ?: 0f)
             }
 
+            override fun onLSitCounter(
+                lSitSecondCounter: Int,
+                lSitDetectedCounter: Int,
+                lSitPerfectCounter: Int
+            ) {
+                this@VideoActivity.lSitSecondCounter = lSitSecondCounter
+                this@VideoActivity.lSitDetectedCounter = lSitDetectedCounter
+                this@VideoActivity.lSitPerfectCounter = lSitPerfectCounter
+            }
+
+            override fun onSquatCounter(squatCounter: Int) {
+                // ToDo: @Mick change this to squatCounter
+                this@VideoActivity.squatCounter = squatCounter
+            }
         })
         lifecycleScope.launch(Dispatchers.Main) {
             videoHPE?.initVideo()

@@ -37,11 +37,13 @@ import org.tensorflow.lite.examples.poseestimation.R
 import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
 import org.tensorflow.lite.examples.poseestimation.YuvToRgbConverter
 import org.tensorflow.lite.examples.poseestimation.data.Person
+import org.tensorflow.lite.examples.poseestimation.exercises.LSit
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNetMultiPose
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
 import org.tensorflow.lite.examples.poseestimation.ml.TrackerType
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
+import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -98,6 +100,13 @@ class CameraHPE(
     /** [Handler] corresponding to [imageReaderThread] */
     private var imageReaderHandler: Handler? = null
     private var cameraId: String = ""
+
+    private val LSitValidator = LSit()
+    private var lSitTimer = 0L
+    private var lSitSecondCounter = 0
+    private var lSitDetectedCounter = 0
+    private var lSitPerfectCounter = 0
+    private var noLSitCounter = 0
 
     suspend fun initCamera() {
         camera = openCamera(cameraManager, cameraId)
@@ -250,6 +259,7 @@ class CameraHPE(
     private fun processImage(bitmap: Bitmap) {
         val persons = mutableListOf<Person>()
         var classificationResult: List<Pair<String, Float>>? = null
+        val currentTime = System.currentTimeMillis()
 
         synchronized(lock) {
             detector?.estimatePoses(bitmap)?.let {
@@ -277,8 +287,35 @@ class CameraHPE(
             when (exerciseType) {
                 R.id.imageView1 -> {
                     // L-Sit
-                    // ToDo: Implement L-Sit exercise -> look at [VideoHPE.kt]
-                    /** the metrics should be the same as in [VideoHPE.kt], so you can make class for both */
+                    /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
+                    val isLSit = LSitValidator.isLSit(persons[0])
+                    // println("isLSit: $isLSit\n")
+                    if (isLSit != 0) {
+                        // initiate timer for 2 seconds, check if max. 10 isLSit == 0 are detected
+                        if (lSitTimer == 0L) {
+                            lSitTimer = currentTime
+                        } else {
+                            if (currentTime - lSitTimer > 1000) {
+                                println("LSit 1 sec hold")
+                                // reset counter and timer
+                                noLSitCounter = 0
+                                // reset timer
+                                lSitTimer = 0L
+                                // increment counter
+                                lSitSecondCounter++
+                            }
+                        }
+                        incrementCounter(isLSit)
+                    } else {
+                        // increment counter
+                        noLSitCounter++
+                        if (noLSitCounter > 10) {
+                            // reset counter
+                            noLSitCounter = 0
+                            // reset timer
+                            lSitTimer = 0L
+                        }
+                    }
                 }
                 R.id.imageView2 -> {
                     // Squat
@@ -329,6 +366,16 @@ class CameraHPE(
         }
     }
 
+    private fun incrementCounter(lSit: Int) {
+        if (lSit == 1) {
+            lSitDetectedCounter++
+        } else if (lSit == 2) {
+            lSitPerfectCounter++
+            lSitDetectedCounter++
+        }
+        listener?.onLSitCounter(lSitSecondCounter, lSitDetectedCounter, lSitPerfectCounter)
+    }
+
     private fun stopImageReaderThread() {
         imageReaderThread?.quitSafely()
         try {
@@ -344,5 +391,7 @@ class CameraHPE(
         fun onFPSListener(fps: Int)
 
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
+
+        fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
     }
 }

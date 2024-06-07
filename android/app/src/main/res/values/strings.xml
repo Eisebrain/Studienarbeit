@@ -40,6 +40,10 @@
     <string name="video_upload">Video upload</string>
     <string name="abord">Return to selection</string>
     <string name="tfe_pe_no_video_selected">No video selected!</string>
+    <string name="text_thank_you">Thank you for your submission! \nHere is your feedback:</string>
+    <string name="text_try_again">Try again</string>
+    <string name="empty" />
+    <string name="finish">Finish exercise analysis</string>
     <string-array name="tfe_pe_models_array">
         <item>Movenet Lightning</item>
         <item>Movenet Thunder</item>
