@@ -14,9 +14,9 @@ class Squat {
      * 2.
      */
     companion object {
-        private const val KNEE_ANGLE_THRESHOLD_MIN = 60
+        private const val KNEE_ANGLE_THRESHOLD_MIN = 65
         private const val KNEE_ANGLE_THRESHOLD_MAX = 85
-        private const val KNEE_ANGLE_THRESHOLD_STAND = 110
+        private const val KNEE_ANGLE_THRESHOLD_STAND = 120
 
         private var previousKneeAngle = Double.MAX_VALUE
     }
@@ -60,14 +60,13 @@ class Squat {
             exerciseUtils.calculateAngleBetweenThreePoints(leftShoulder, leftHip, leftKnee)
         val hipRight =
             exerciseUtils.calculateAngleBetweenThreePoints(rightShoulder, rightHip, rightKnee)
-
         return Quadruple(hipLeft, hipRight, kneeLeft, kneeRight)
     }
 
 
     fun updateSquatState(person: Person): Int {
         val currentKneeAngle = calculateAverageKneeAngle(person)
-
+        println(currentKneeAngle)
         when (currentState) {
             SquatState.Stand -> {
                 if (currentKneeAngle < previousKneeAngle && currentKneeAngle <= KNEE_ANGLE_THRESHOLD_STAND) {
