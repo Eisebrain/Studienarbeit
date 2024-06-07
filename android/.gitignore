@@ -14,3 +14,5 @@
 /.idea/
 *.iml
 /opencv-4.8.1/
+
+.gradle/8.2/fileHashes/resourceHashesCache.bin
