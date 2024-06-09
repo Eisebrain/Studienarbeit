@@ -33,7 +33,7 @@ The app can run on any device with a camera and Android 6.0 (API level 23) or hi
 * If it asks you to use `Instant Run`, click `Proceed Without Instant Run`.
 
 * If there are build errors in the `OpenCV` module, you may reinstall the
- OpenCV SDK by following the instructions in `install_openCV.md`.
+ OpenCV SDK by following the instructions in [`install_openCV.md`](install_openCV.md).
 
 * If you want to run the app on a smartphone, you need to have an Android device plugged in with developer options
  enabled at this point. See **[here](
