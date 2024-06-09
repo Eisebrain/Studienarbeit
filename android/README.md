@@ -4,7 +4,7 @@
 This is an Android application that uses TensorFlow MoveNet to perform real-time pose estimation on a live camera feed 
 or on a video file. The app displays the video feed and overlays the detected poses on top of it.
 The app analyzes the gymnastic exercises _Squat_ and _L-Sit_ and provides feedback to the user.
-The app can run on any device with a camera and Android 5.0 (API level 21) or higher.
+The app can run on any device with a camera and Android 6.0 (API level 23) or higher.
 
 ## Build the demo using Android Studio
 
@@ -13,7 +13,7 @@ The app can run on any device with a camera and Android 5.0 (API level 21) or hi
 * If you don't have it already, install **[Android Studio Iguana](
   https://developer.android.com/studio/releases/past-releases/as-iguana-release-notes?hl=en)**, following the instructions on the website.
 
-* Android device and Android development environment with minimum API 21.
+* Android device and Android development environment with minimum API 23.
 
 ### Building
 * Open Android Studio, and from the `Welcome` screen, select
@@ -31,6 +31,9 @@ The app can run on any device with a camera and Android 5.0 (API level 21) or hi
  top menu. You may need to rebuild the project using `Build` > `Rebuild Project`.
 
 * If it asks you to use `Instant Run`, click `Proceed Without Instant Run`.
+
+* If there are build errors in the `OpenCV` module, you may reinstall the
+ OpenCV SDK by following the instructions in `install_openCV.md`.
 
 * If you want to run the app on a smartphone, you need to have an Android device plugged in with developer options
  enabled at this point. See **[here](
