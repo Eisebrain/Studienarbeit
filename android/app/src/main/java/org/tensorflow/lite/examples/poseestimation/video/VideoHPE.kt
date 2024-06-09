@@ -18,7 +18,9 @@ import org.opencv.android.OpenCVLoader
 import org.tensorflow.lite.examples.poseestimation.R
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
 import java.lang.IllegalStateException
+
 import org.tensorflow.lite.examples.poseestimation.exercises.LSit
+import org.tensorflow.lite.examples.poseestimation.exercises.Squat
 
 
 class VideoHPE(
@@ -36,8 +38,10 @@ class VideoHPE(
 
         /** Threshold for confidence score. */
         private const val MIN_CONFIDENCE = .2f
+
         //private const val TAG = "Video"
         private val LSitValidator = LSit()
+        private val SquatValidator = Squat()
     }
 
 
@@ -61,7 +65,24 @@ class VideoHPE(
     private var lSitDetectedCounter = 0
     private var lSitPerfectCounter = 0
 
+
+    // Squat Counter
+    private var squatCorrectCounter = 0
+    private var squatTooDeepCounter = 0
+    private var squatNotDeepEnoughCounter = 0
+
+    private var totalSquatFrames = 0
+    private var spineStraightCount = 0
+    private var spineStraightPercentage = 0.0
+    private var totalSpineStraightPercentage = 0.0
+    private var countSpineStraightMeasurements = 0
+    private var averageSpineStraightPercentage = 0.0
+
+
+
     private var retriever: MediaMetadataRetriever? = null
+
+    private var previousSquatCount = 0
 
     suspend fun initVideo() {
         if (OpenCVLoader.initDebug()) {
@@ -97,9 +118,8 @@ class VideoHPE(
                     // Inkrementiere die aktuelle Zeit um das Intervall zwischen den Frames
                     currentTimeMs += frameIntervalMs
 
-                    listener?.onFPSListener((frameIntervalMs/10).toInt())
-                }
-                catch(e: IllegalStateException) {
+                    listener?.onFPSListener((frameIntervalMs / 10).toInt())
+                } catch (e: IllegalStateException) {
                     println("Error: ${e.message}")
                     break
                 }
@@ -195,26 +215,60 @@ class VideoHPE(
                         }
                     }
                 }
+
                 R.id.imageView2 -> {
                     // Squat
                     // ToDo: Implement Squat exercise -> look at [CameraHPE.kt]
                     /** the metrics should be the same as in [CameraHPE.kt], so you can make class for both */
 
+
+                    val currentSquatCount = SquatValidator.updateSquatState(persons[0])
+                    // 1 is correct Squat, 2 is too deep, 3 is not deep enough
+                    if (currentSquatCount == 1) {
+                        squatCorrectCounter++
+                    }
+                    if (currentSquatCount == 2) {
+                        squatTooDeepCounter++
+                    }
+                    if (currentSquatCount == 3) {
+                        squatNotDeepEnoughCounter++
+                    }
+
                     // ToDo: @Mick change this to squatCounter
                     // set squat-counter in VideoActivity
-                    listener?.onSquatCounter(0)
 
-                    // Squat -> perform spine curvature detection
-                    isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
-                    if (isSpineStraight != null) {
-                        val text = if (isSpineStraight!!) {
-                            // Todo: Do not log the result, but display it on the screen or give feedback to the user
-                            "Spine is straight"
-                        } else {
-                            "Spine is not straight"
+
+                    if (SquatValidator.currentState == Squat.SquatState.Squat) {
+                        isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
+                        if (isSpineStraight == true) {
+                            spineStraightCount++
                         }
-                        println(text)
+                        totalSquatFrames++
                     }
+
+                    // Wenn der Squat endet, berechne den Prozentsatz der korrekten Wirbelsäulenhaltung
+                    if (SquatValidator.currentState == Squat.SquatState.Stand && totalSquatFrames > 0) {
+                        spineStraightPercentage =
+                            (spineStraightCount.toDouble() / totalSquatFrames) * 100
+                        println("Percentage of time spine was straight during squat: $spineStraightPercentage%")
+
+                        totalSpineStraightPercentage += spineStraightPercentage
+                        countSpineStraightMeasurements++
+
+                        averageSpineStraightPercentage = totalSpineStraightPercentage / countSpineStraightMeasurements
+                        println("Average percentage of time spine was straight across all squats: $averageSpineStraightPercentage%")
+
+                        // Reset der Counter für den nächsten Squat
+                        spineStraightCount = 0
+                        totalSquatFrames = 0
+                    }
+
+                    listener?.onSquatCounter(
+                        squatCorrectCounter,
+                        squatTooDeepCounter,
+                        squatNotDeepEnoughCounter,
+                        averageSpineStraightPercentage
+                    )
                 }
             }
         }
@@ -317,7 +371,12 @@ class VideoHPE(
 
         fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
 
-        fun onSquatCounter(squatCounter: Int)
+        fun onSquatCounter(
+            squatCorrectCounter: Int,
+            squatTooDeepCounter: Int,
+            squatNotDeepEnoughCounter: Int,
+            averageSpineStraightPercentage: Double
+        )
     }
 
 }

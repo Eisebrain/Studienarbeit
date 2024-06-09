@@ -82,7 +82,10 @@ class VideoActivity : AppCompatActivity() {
     private var lSitPerfectCounter = 0
 
     /** Variables for Squat counter in [videoHPE] */
-    private var squatCounter = 0
+    private var squatCorrectCounter = 0
+    private var squatTooDeepCounter = 0
+    private var squatNotDeepEnoughCounter = 0
+    private var spineStraightPercentage: Double = 0.0
 
 
     private val requestPermissionLauncher =
@@ -131,8 +134,12 @@ class VideoActivity : AppCompatActivity() {
             intent.putExtra("LSitPerfectCounter", lSitPerfectCounter)
 
             // pass Squat counter to FinishActivity
-            // ToDo: @Mick change this to squatCounter
-            intent.putExtra("SquatCounter", squatCounter)
+            intent.putExtra("SquatCorrectCounter", squatCorrectCounter)
+            intent.putExtra("SquatTooDeepCounter", squatTooDeepCounter)
+            intent.putExtra("SquatNotDeepEnoughCounter", squatNotDeepEnoughCounter)
+            // pass spineStraightPercentage to FinishActivity
+            println("SpineStraightPercentage1: $spineStraightPercentage")
+            intent.putExtra("SpineStraightPercentage", spineStraightPercentage)
 
             startActivity(intent)
         }
@@ -208,9 +215,16 @@ class VideoActivity : AppCompatActivity() {
                 this@VideoActivity.lSitPerfectCounter = lSitPerfectCounter
             }
 
-            override fun onSquatCounter(squatCounter: Int) {
-                // ToDo: @Mick change this to squatCounter
-                this@VideoActivity.squatCounter = squatCounter
+            override fun onSquatCounter(
+                squatCorrectCounter: Int,
+                squatTooDeepCounter: Int,
+                squatNotDeepEnoughCounter: Int,
+                spineStraightPercentage: Double) {
+
+                this@VideoActivity.squatCorrectCounter = squatCorrectCounter
+                this@VideoActivity.squatTooDeepCounter = squatTooDeepCounter
+                this@VideoActivity.squatNotDeepEnoughCounter = squatNotDeepEnoughCounter
+                this@VideoActivity.spineStraightPercentage = spineStraightPercentage
             }
         })
         lifecycleScope.launch(Dispatchers.Main) {

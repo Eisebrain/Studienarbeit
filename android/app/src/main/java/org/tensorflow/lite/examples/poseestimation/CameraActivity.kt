@@ -84,6 +84,14 @@ class CameraActivity : AppCompatActivity() {
     private var lSitDetectedCounter = 0
     private var lSitPerfectCounter = 0
 
+    /** Variables for Squat counter in [videoHPE] */
+    private var squatCorrectCounter = 0
+    private var squatTooDeepCounter = 0
+    private var squatNotDeepEnoughCounter = 0
+    private var spineStraightPercentage: Double = 0.0
+
+
+
     private var cameraHPE: CameraHPE? = null
     private var isClassifyPose = false
     private val requestPermissionLauncher =
@@ -177,6 +185,17 @@ class CameraActivity : AppCompatActivity() {
             intent.putExtra("LSitSecondCounter", lSitSecondCounter.toString())
             intent.putExtra("LSitDetectedCounter", lSitDetectedCounter)
             intent.putExtra("LSitPerfectCounter", lSitPerfectCounter)
+
+
+            // pass Squat counter to FinishActivity
+            intent.putExtra("SquatCorrectCounter", squatCorrectCounter)
+            intent.putExtra("SquatTooDeepCounter", squatTooDeepCounter)
+            intent.putExtra("SquatNotDeepEnoughCounter", squatNotDeepEnoughCounter)
+            // pass spineStraightPercentage to FinishActivity
+            println("SpineStraightPercentage1: $spineStraightPercentage")
+            intent.putExtra("SpineStraightPercentage", spineStraightPercentage)
+
+
             startActivity(intent)
         }
 
@@ -264,6 +283,17 @@ class CameraActivity : AppCompatActivity() {
                             this@CameraActivity.lSitSecondCounter = lSitSecondCounter
                             this@CameraActivity.lSitDetectedCounter = lSitDetectedCounter
                             this@CameraActivity.lSitPerfectCounter = lSitPerfectCounter
+                        }
+                        override fun onSquatCounter(
+                            squatCorrectCounter: Int,
+                            squatTooDeepCounter: Int,
+                            squatNotDeepEnoughCounter: Int,
+                            spineStraightPercentage: Double) {
+
+                            this@CameraActivity.squatCorrectCounter = squatCorrectCounter
+                            this@CameraActivity.squatTooDeepCounter = squatTooDeepCounter
+                            this@CameraActivity.squatNotDeepEnoughCounter = squatNotDeepEnoughCounter
+                            this@CameraActivity.spineStraightPercentage = spineStraightPercentage
                         }
 
                     }).apply {

@@ -38,15 +38,18 @@ import org.tensorflow.lite.examples.poseestimation.VisualizationUtils
 import org.tensorflow.lite.examples.poseestimation.YuvToRgbConverter
 import org.tensorflow.lite.examples.poseestimation.data.Person
 import org.tensorflow.lite.examples.poseestimation.exercises.LSit
+import org.tensorflow.lite.examples.poseestimation.exercises.Squat
 import org.tensorflow.lite.examples.poseestimation.ml.MoveNetMultiPose
 import org.tensorflow.lite.examples.poseestimation.ml.PoseClassifier
 import org.tensorflow.lite.examples.poseestimation.ml.PoseDetector
 import org.tensorflow.lite.examples.poseestimation.ml.TrackerType
 import org.tensorflow.lite.examples.poseestimation.navigation.SelectionActivity
+import org.tensorflow.lite.examples.poseestimation.tracker.SpineTracker
 import org.tensorflow.lite.examples.poseestimation.video.VideoHPE
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+
 
 class CameraHPE(
     private val surfaceView: SurfaceView,
@@ -65,6 +68,8 @@ class CameraHPE(
         /** Threshold for confidence score. */
         private const val MIN_CONFIDENCE = .2f
         private const val TAG = "Camera Source"
+        private val SquatValidator = Squat()
+
     }
 
     private val lock = Any()
@@ -73,6 +78,8 @@ class CameraHPE(
     private var isTrackerEnabled = false
     private var yuvConverter: YuvToRgbConverter = YuvToRgbConverter(surfaceView.context)
     private lateinit var imageBitmap: Bitmap
+    private var spineTracker: SpineTracker? = null
+    private var isSpineStraight: Boolean? = null
 
     /** Frame count that have been processed so far in an one second interval to calculate FPS. */
     private var fpsTimer: Timer? = null
@@ -107,6 +114,21 @@ class CameraHPE(
     private var lSitDetectedCounter = 0
     private var lSitPerfectCounter = 0
     private var noLSitCounter = 0
+
+
+
+    // Squat Counter
+    private var squatCorrectCounter = 0
+    private var squatTooDeepCounter = 0
+    private var squatNotDeepEnoughCounter = 0
+
+    private var totalSquatFrames = 0
+    private var spineStraightCount = 0
+    private var spineStraightPercentage = 0.0
+    private var totalSpineStraightPercentage = 0.0
+    private var countSpineStraightMeasurements = 0
+    private var averageSpineStraightPercentage = 0.0
+
 
     suspend fun initCamera() {
         camera = openCamera(cameraManager, cameraId)
@@ -321,6 +343,52 @@ class CameraHPE(
                     // Squat
                     // ToDo: Implement Squat exercise -> look at [VideoHPE.kt]
                     /** the metrics should be the same as in [VideoHPE.kt], so you can make class for both */
+                    val currentSquatCount = CameraHPE.SquatValidator.updateSquatState(persons[0])
+                    // 1 is correct Squat, 2 is too deep, 3 is not deep enough
+                    if (currentSquatCount == 1) {
+                        squatCorrectCounter++
+                    }
+                    if (currentSquatCount == 2) {
+                        squatTooDeepCounter++
+                    }
+                    if (currentSquatCount == 3) {
+                        squatNotDeepEnoughCounter++
+                    }
+
+
+
+
+                    if (CameraHPE.SquatValidator.currentState == Squat.SquatState.Squat) {
+                        isSpineStraight = spineTracker?.trackSpine(persons[0], bitmap)
+                        if (isSpineStraight == true) {
+                            spineStraightCount++
+                        }
+                        totalSquatFrames++
+                    }
+
+                    // Wenn der Squat endet, berechne den Prozentsatz der korrekten Wirbelsäulenhaltung
+                    if (CameraHPE.SquatValidator.currentState == Squat.SquatState.Stand && totalSquatFrames > 0) {
+                        spineStraightPercentage =
+                            (spineStraightCount.toDouble() / totalSquatFrames) * 100
+                        println("Percentage of time spine was straight during squat: $spineStraightPercentage%")
+
+                        totalSpineStraightPercentage += spineStraightPercentage
+                        countSpineStraightMeasurements++
+
+                        averageSpineStraightPercentage = totalSpineStraightPercentage / countSpineStraightMeasurements
+                        println("Average percentage of time spine was straight across all squats: $averageSpineStraightPercentage%")
+
+                        // Reset der Counter für den nächsten Squat
+                        spineStraightCount = 0
+                        totalSquatFrames = 0
+                    }
+
+                    listener?.onSquatCounter(
+                        squatCorrectCounter,
+                        squatTooDeepCounter,
+                        squatNotDeepEnoughCounter,
+                        averageSpineStraightPercentage
+                    )
                 }
             }
         }
@@ -393,5 +461,12 @@ class CameraHPE(
         fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
 
         fun onLSitCounter(lSitSecondCounter: Int, lSitDetectedCounter: Int, lSitPerfectCounter: Int)
+
+        fun onSquatCounter(
+            squatCorrectCounter: Int,
+            squatTooDeepCounter: Int,
+            squatNotDeepEnoughCounter: Int,
+            averageSpineStraightPercentage: Double
+        )
     }
 }
