@@ -1,3 +1,15 @@
+# Studienarbeit - Entwicklung einer App zur Überprüfung und Korrektur der Körperhaltung bei der Ausführung von Kraftsportübungen
+This repository contains the code for the app developed in the context of the study project "Development of an app for checking and correcting body posture during strength training exercises".
+The app is based on the TensorFlow Lite Pose Estimation model and is intended to help users to perform strength training exercises with the correct posture.
+
+The repository is forked from the official [TensorFlow Repository](https://github.com/tensorflow/examples) and contains the necessary changes to the Pose Estimation model to calculate the angles of the joints and to display them.
+
+For detailed information on how to setup this repository please refere to [android/README.md](android/README.md).
+
+
+***
+<details>
+    <summary>README from the original repository</summary>
 Go to lite/examples/pose_estimation/android/app/src/main/java/org/tensorflow/lite/examples/poseestimation
 
 - Changes(angle calculation & logging) were made in MoveNet.kt
@@ -41,3 +53,5 @@ To file an issue, use the tracker in the
 ## License
 
 [Apache License 2.0](LICENSE)
+
+</details>
